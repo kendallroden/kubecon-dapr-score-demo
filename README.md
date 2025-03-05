@@ -13,6 +13,7 @@ The end-to-end solution is comprised of five services:
 The solution is comprised of python services:
 
 - Install [Python3](https://www.python.org/downloads/)
+- Install [Dapr CLI](https://docs.dapr.io/getting-started/install-dapr-cli/) Version 1.15 + and [initialize dapr locally](https://docs.dapr.io/getting-started/install-dapr-selfhost/)
 
 The payment app makes use of an HTTP output binding pointing to Square. Follow the steps below to configure:
 
