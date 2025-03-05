@@ -39,4 +39,3 @@ dapr run -f .
 ## Use the APIs
 
 A `test.rest` file is available at the root of this repository and can be used with the VS Code `Rest Client` extension.
-    ![Rest Client](/images/rest-client.png)
