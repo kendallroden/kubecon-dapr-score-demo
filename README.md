@@ -24,8 +24,7 @@ The payment app makes use of an HTTP output binding pointing to Square. Follow t
 1. Add a new application and call it `workflow-payment-app` or your own unique identifier.
 1. Select "Skip" on the subsequent blades.
 1. On the Credentials page, ensure `Sandbox` is selected in the top slider > find `Sandbox Access token` > Click "show" > Copy the Access Token value.
-1. Navigate to the directory titled "components" and select the "square-http-binding.yaml" file. Replace `[your-token]` with the API token retrieved.
-1. Return to the Square Developer portal and underneath the `Sandbox Access Token` section referenced above, copy the value for `Sandbox API version` and input the value for the HTTP header in the file `./services/payments/app.py` on line `35`.
+1. Navigate to the file "local-secret.json" and replace the secret value after "Bearer" with the API token retrieved.
 
 Once you have completed the above steps, you are ready to connect to the Square Payment API from your Dapr Workflow!
 

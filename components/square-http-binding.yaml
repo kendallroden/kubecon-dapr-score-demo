@@ -9,8 +9,12 @@ spec:
     - name: url
       value: https://connect.squareupsandbox.com/
     - name: securityToken
-      value: Bearer EAAAl-FIuAfmE-ToAy4nZ-w71KSeWrxhbX1g-jmWiuIQ4knDVot4c8XDr-Y4hKcZ
+      secretKeyRef:
+        name: squareToken
+        key: squareToken
     - name: securityTokenHeader
       value: Authorization
+auth:
+  secretStore: local-secret-store
 scopes:
   - payments
