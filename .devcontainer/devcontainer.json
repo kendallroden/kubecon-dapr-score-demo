@@ -16,8 +16,7 @@
 	"customizations": {
 		"vscode": {
 			"extensions": [
-				"redhat.vscode-yaml",
-				"humanitec.humanitec"
+				"redhat.vscode-yaml"
 			],
 			"settings": {
 				"yaml.schemas": {
