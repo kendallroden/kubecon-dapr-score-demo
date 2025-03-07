@@ -17,11 +17,7 @@ help:
 		--provisioners https://raw.githubusercontent.com/score-spec/community-provisioners/refs/heads/main/score-compose/10-service.provisioners.yaml \
 		--provisioners https://raw.githubusercontent.com/score-spec/community-provisioners/refs/heads/main/score-compose/10-redis-dapr-state-store.provisioners.yaml
 
-compose.yaml: services/inventory/score.yaml services/notifications/score.yaml services/order-processor/score.yaml services/payments/score.yaml services/shipping/score.yaml .score-compose/state.yaml Makefile
-	score-compose generate \
-		services/inventory/score.yaml \
-		--build 'inventory={"context":"services/inventory/","tags":["inventory:latest"]}'
-    
+compose.yaml: services/notifications/score.yaml services/order-processor/score.yaml services/payments/score.yaml services/shipping/score.yaml .score-compose/state.yaml Makefile
 	score-compose generate \
 		services/notifications/score.yaml \
 		--build 'notifications={"context":"services/notifications/","tags":["notifications:latest"]}'
