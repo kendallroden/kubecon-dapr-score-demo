@@ -1,6 +1,10 @@
 apiVersion: score.dev/v1b1
 metadata:
   name: inventory
+  annotations:
+    dapr.io/enabled: "true"
+    dapr.io/app-id: "inventory"
+    dapr.io/app-port: "3002"
 containers:
   inventory:
     image: .

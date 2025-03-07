@@ -1,6 +1,10 @@
 apiVersion: score.dev/v1b1
 metadata:
   name: payments
+  annotations:
+    dapr.io/enabled: "true"
+    dapr.io/app-id: "payments"
+    dapr.io/app-port: "3003"
 containers:
   payments:
     image: .

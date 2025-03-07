@@ -1,6 +1,10 @@
 apiVersion: score.dev/v1b1
 metadata:
   name: order-processor
+  annotations:
+    dapr.io/enabled: "true"
+    dapr.io/app-id: "order-processor"
+    dapr.io/app-port: "3000"
 containers:
   order-processor:
     image: .

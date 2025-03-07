@@ -1,6 +1,10 @@
 apiVersion: score.dev/v1b1
 metadata:
   name: shipping
+  annotations:
+    dapr.io/enabled: "true"
+    dapr.io/app-id: "shipping"
+    dapr.io/app-port: "3004"
 containers:
   shipping:
     image: .
