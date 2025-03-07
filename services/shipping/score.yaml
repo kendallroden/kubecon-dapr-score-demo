@@ -1,0 +1,8 @@
+apiVersion: score.dev/v1b1
+metadata:
+  name: shipping
+containers:
+  shipping:
+    image: .
+    variables:
+      APP_PORT: "3004"

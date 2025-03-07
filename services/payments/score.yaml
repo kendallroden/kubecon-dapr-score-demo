@@ -1,0 +1,8 @@
+apiVersion: score.dev/v1b1
+metadata:
+  name: payments
+containers:
+  payments:
+    image: .
+    variables:
+      APP_PORT: "3003"

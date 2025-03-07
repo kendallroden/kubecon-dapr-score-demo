@@ -11,19 +11,33 @@ help:
 .PHONY: .FORCE
 .FORCE:
 
-WORKLOAD_NAME = my-sample-workload
-CONTAINER_NAME = my-sample-container
-CONTAINER_IMAGE = ${WORKLOAD_NAME}:test
-
 .score-compose/state.yaml:
 	score-compose init \
 		--no-sample \
 		--provisioners https://raw.githubusercontent.com/score-spec/community-provisioners/refs/heads/main/score-compose/10-service.provisioners.yaml \
 		--provisioners https://raw.githubusercontent.com/score-spec/community-provisioners/refs/heads/main/score-compose/10-redis-dapr-state-store.provisioners.yaml
 
-compose.yaml: score/score.yaml .score-compose/state.yaml Makefile
-	score-compose generate score/score.yaml \
-		--build '${CONTAINER_NAME}={"context":"app/","tags":["${CONTAINER_IMAGE}"]}'
+compose.yaml: services/inventory/score.yaml services/notifications/score.yaml services/order-processor/score.yaml services/payments/score.yaml services/shipping/score.yaml .score-compose/state.yaml Makefile
+	score-compose generate \
+		services/inventory/score.yaml \
+		--build 'inventory={"context":"services/inventory/","tags":["inventory:latest"]}'
+    
+	score-compose generate \
+		services/notifications/score.yaml \
+		--build 'notifications={"context":"services/notifications/","tags":["notifications:latest"]}'
+	
+	score-compose generate \
+		services/order-processor/score.yaml \
+		--build 'order-processor={"context":"services/order-processor/","tags":["order-processor:latest"]}'
+	
+	score-compose generate \
+		services/payments/score.yaml \
+		--build 'payments={"context":"services/payments/","tags":["payments:latest"]}'
+	
+	score-compose generate \
+		services/shipping/score.yaml \
+		--build 'shipping={"context":"services/shipping/","tags":["shipping:latest"]}'
+	
 	scripts/inject-dapr-sidecar.sh
 	scripts/inject-dapr-placement.sh
 
