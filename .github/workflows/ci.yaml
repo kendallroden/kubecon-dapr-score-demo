@@ -17,3 +17,33 @@ jobs:
           docker build -t order-processor:latest ./services/order-processor
           docker build -t payments:latest ./services/payments
           docker build -t shipping:latest ./services/shipping
+  score-compose-generate:
+    runs-on: ubuntu-24.04
+    steps:
+      - name: checkout code
+        uses: actions/checkout@v4
+      - name: install score-compose
+        uses: score-spec/setup-score@v3
+        with:
+          file: score-compose
+          token: ${{ secrets.GITHUB_TOKEN }}
+          version: ${{ env.SCORE_COMPOSE_VERSION }}
+      - name: make compose-test
+        run: |
+          make compose-test
+      - name: make kind-create-cluster
+        run: |
+          make kind-create-cluster
+      - name: make kind-load-image
+        run: |
+          make kind-load-image
+      - name: install score-k8s
+        uses: score-spec/setup-score@v3
+        with:
+          file: score-k8s
+          token: ${{ secrets.GITHUB_TOKEN }}
+          version: ${{ env.SCORE_K8S_VERSION }}
+      - name: make k8s-up
+        id: k8s-up
+        run: |
+          make k8s-up

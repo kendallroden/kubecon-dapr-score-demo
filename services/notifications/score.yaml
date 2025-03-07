@@ -1,0 +1,8 @@
+apiVersion: score.dev/v1b1
+metadata:
+  name: notifications
+containers:
+  notifications:
+    image: .
+    variables:
+      APP_PORT: "3001"
