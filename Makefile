@@ -57,13 +57,18 @@ compose-down:
 	score-k8s init \
 		--no-sample
 
-manifests.yaml: score/score.yaml .score-k8s/state.yaml Makefile
-	score-k8s generate score/score.yaml \
-		--image ${CONTAINER_IMAGE} \
-		--override-property containers.${CONTAINER_NAME}.variables.MESSAGE="Hello, Kubernetes!" \
-		--patch-manifests 'Deployment/*/spec.template.spec.automountServiceAccountToken=false' \
-		--patch-manifests 'Deployment/*/spec.template.spec.securityContext={"fsGroup":65532,"runAsGroup":65532,"runAsNonRoot":true,"runAsUser":65532,"seccompProfile":{"type":"RuntimeDefault"}}'
-	echo '{"spec":{"template":{"spec":{"containers":[{"name":"${CONTAINER_NAME}","securityContext":{"allowPrivilegeEscalation":false,"privileged": false,"readOnlyRootFilesystem": true,"capabilities":{"drop":["ALL"]}}}]}}}}' > deployment-patch.yaml
+manifests.yaml: services/notifications/score.yaml services/order-processor/score.yaml services/payments/score.yaml services/shipping/score.yaml .score-k8s/state.yaml Makefile
+	score-k8s generate services/notifications/score.yaml \
+		--image notifications:latest
+	
+	score-k8s generate services/order-processor/score.yaml \
+		--image order-processor:latest
+	
+	score-k8s generate services/payments/score.yaml \
+		--image payments:latest
+	
+	score-k8s generate services/shipping/score.yaml \
+		--image shipping:latest
 
 ## Create a local Kind cluster.
 .PHONY: kind-create-cluster
@@ -73,7 +78,10 @@ kind-create-cluster:
 ## Load the local container image in the current Kind cluster.
 .PHONY: kind-load-image
 kind-load-image:
-	kind load docker-image ${CONTAINER_IMAGE}
+	kind load docker-image notifications:latest
+	kind load docker-image order-processor:latest
+	kind load docker-image payments:latest
+	kind load docker-image shipping:latest
 
 NAMESPACE ?= default
 ## Generate a manifests.yaml file from the score spec, deploy it to Kubernetes and wait for the Pods to be Ready.
@@ -82,19 +90,6 @@ k8s-up: manifests.yaml
 	kubectl apply \
 		-f manifests.yaml \
 		-n ${NAMESPACE}
-	kubectl patch \
-		deployment ${WORKLOAD_NAME} \
-		--patch-file deployment-patch.yaml \
-		-n ${NAMESPACE}
-	kubectl wait deployments/${WORKLOAD_NAME} \
-		-n ${NAMESPACE} \
-		--for condition=Available \
-		--timeout=90s
-	kubectl wait pods \
-		-n ${NAMESPACE} \
-		-l app.kubernetes.io/name=${WORKLOAD_NAME} \
-		--for condition=Ready \
-		--timeout=90s
 
 ## Expose the container deployed in Kubernetes via port-forward.
 .PHONY: k8s-test
