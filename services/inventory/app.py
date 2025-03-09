@@ -4,7 +4,6 @@ import os
 import grpc
 import json
 
-from pydantic import BaseModel
 from dapr.clients import DaprClient
 from dapr.clients.grpc._state import StateItem
 from flask import Flask, g, request, jsonify

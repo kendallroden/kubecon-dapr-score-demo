@@ -17,7 +17,11 @@ help:
 		--provisioners https://raw.githubusercontent.com/score-spec/community-provisioners/refs/heads/main/score-compose/10-service.provisioners.yaml \
 		--provisioners https://raw.githubusercontent.com/score-spec/community-provisioners/refs/heads/main/score-compose/10-redis-dapr-state-store.provisioners.yaml
 
-compose.yaml: services/notifications/score.yaml services/order-processor/score.yaml services/payments/score.yaml services/shipping/score.yaml .score-compose/state.yaml Makefile
+compose.yaml: services/inventory/score.yaml services/notifications/score.yaml services/order-processor/score.yaml services/payments/score.yaml services/shipping/score.yaml .score-compose/state.yaml Makefile
+	score-compose generate \
+		services/inventory/score.yaml \
+		--build 'inventory={"context":"services/inventory/","tags":["inventory:latest"]}'
+	
 	score-compose generate \
 		services/notifications/score.yaml \
 		--build 'notifications={"context":"services/notifications/","tags":["notifications:latest"]}'
@@ -57,7 +61,10 @@ compose-down:
 	score-k8s init \
 		--no-sample
 
-manifests.yaml: services/notifications/score.yaml services/order-processor/score.yaml services/payments/score.yaml services/shipping/score.yaml .score-k8s/state.yaml Makefile
+manifests.yaml: services/inventory/score.yaml services/notifications/score.yaml services/order-processor/score.yaml services/payments/score.yaml services/shipping/score.yaml .score-k8s/state.yaml Makefile
+	score-k8s generate services/inventory/score.yaml \
+		--image inventory:latest
+
 	score-k8s generate services/notifications/score.yaml \
 		--image notifications:latest
 	
