@@ -33,3 +33,12 @@ spec:
     port: 80
     protocol: HTTP
 EOF
+
+helm repo add dapr https://dapr.github.io/helm-charts/
+helm repo update
+helm upgrade \
+    dapr \
+    dapr/dapr \
+    --install \
+    --create-namespace \
+    -n dapr-system

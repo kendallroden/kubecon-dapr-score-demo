@@ -85,6 +85,7 @@ kind-create-cluster:
 ## Load the local container image in the current Kind cluster.
 .PHONY: kind-load-image
 kind-load-image:
+	kind load docker-image inventory:latest
 	kind load docker-image notifications:latest
 	kind load docker-image order-processor:latest
 	kind load docker-image payments:latest
