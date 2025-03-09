@@ -10,3 +10,8 @@ containers:
     image: .
     variables:
       APP_PORT: "3002"
+      STATESTORE_NAME: "${resources.inventory-state.name}"
+resources:
+  inventory-state:
+    type: dapr-state-store
+    class: redis
