@@ -10,3 +10,13 @@ containers:
     image: .
     variables:
       APP_PORT: "3001"
+      TOPIC_NAME: "${resources.subscription.topic}"
+resources:
+  pubsub:
+    type: dapr-pubsub
+    id: pubsub
+  subscription:
+    type: dapr-subscription
+    params:
+      topic: "notifications"
+      pubsub: "${resources.pubsub.name}"

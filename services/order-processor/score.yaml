@@ -10,3 +10,9 @@ containers:
     image: .
     variables:
       APP_PORT: "3000"
+      PUBSUB_NAME: "${resources.pubsub.name}"
+      TOPIC_NAME: "notifications"
+resources:
+  pubsub:
+    type: dapr-pubsub
+    id: pubsub
