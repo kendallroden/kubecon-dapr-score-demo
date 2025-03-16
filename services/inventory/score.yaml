@@ -11,7 +11,11 @@ containers:
     variables:
       APP_PORT: "3002"
       STATESTORE_NAME: "${resources.inventory-state.name}"
+service:
+  ports:
+    http:
+      port: 3002
+      targetPort: 3002
 resources:
   inventory-state:
     type: dapr-state-store
-    class: redis
