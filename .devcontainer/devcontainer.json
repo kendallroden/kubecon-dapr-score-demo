@@ -1,6 +1,6 @@
 {
 	"name": "Score Dev Container",
-	"image": "mcr.microsoft.com/devcontainers/base:noble",
+	"image": "mcr.microsoft.com/devcontainers/python:3",
 	"features": {
 		"ghcr.io/devcontainers/features/docker-in-docker:2": {
 			"moby": true,
@@ -17,7 +17,8 @@
 		"vscode": {
 			"extensions": [
 				"redhat.vscode-yaml",
-				"humao.rest-client"
+				"humao.rest-client",
+				"ms-azuretools.vscode-dapr"
 			],
 			"settings": {
 				"yaml.schemas": {

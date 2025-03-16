@@ -23,5 +23,7 @@ sudo mv ./kind /usr/local/bin/kind
 sudo wget https://github.com/mikefarah/yq/releases/latest/download/yq_linux_amd64 -O /usr/bin/yq
 sudo chmod +x /usr/bin/yq
 
+sudo wget -q https://raw.githubusercontent.com/dapr/cli/master/install/install.sh -O - | /bin/bash
+
 cd ..
 rm -rf install-more-tools

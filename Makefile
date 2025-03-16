@@ -11,6 +11,10 @@ help:
 .PHONY: .FORCE
 .FORCE:
 
+dapr-up:
+	dapr init || true
+	dapr run -f . 
+
 .score-compose/state.yaml:
 	score-compose init \
 		--no-sample \
