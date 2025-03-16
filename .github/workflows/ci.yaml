@@ -5,19 +5,7 @@ on:
       - main
   pull_request:
 jobs:
-  build-containers:
-    runs-on: ubuntu-24.04
-    steps:
-      - name: checkout code
-        uses: actions/checkout@v4
-      - name: build containers
-        run: |
-          docker build -t inventory:latest ./services/inventory
-          docker build -t notifications:latest ./services/notifications
-          docker build -t order-processor:latest ./services/order-processor
-          docker build -t payments:latest ./services/payments
-          docker build -t shipping:latest ./services/shipping
-  score-tests:
+  job:
     runs-on: ubuntu-24.04
     steps:
       - name: checkout code
