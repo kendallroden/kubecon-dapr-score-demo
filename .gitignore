@@ -234,7 +234,4 @@ pyrightconfig.json
 compose.yaml
 .score-compose/*
 .score-k8s/*
-!.score-k8s/00-rabbitmq-dapr-pubsub.provisioners.yaml
-!.score-k8s/00-redis-dapr-pubsub.provisioners.yaml
-!.score-k8s/00-dapr-subscription.provisioners.yaml
 manifests.yaml
