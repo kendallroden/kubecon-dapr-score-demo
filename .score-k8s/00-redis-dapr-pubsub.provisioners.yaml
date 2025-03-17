@@ -3,6 +3,7 @@
   class: default
   init: |
     randomPassword: {{ randAlphaNum 16 | quote }}
+    port: 6379
   state: |
     service: redis-{{ .SourceWorkload }}-{{ substr 0 8 .Guid | lower }}
     username: default
@@ -79,7 +80,7 @@
                 readOnlyRootFilesystem: true
               ports:
               - name: redis
-                containerPort: 6379
+                containerPort: {{ .Init.port }}
               volumeMounts:
               - name: redis-data
                 mountPath: /data
@@ -138,5 +139,5 @@
           app.kubernetes.io/instance: {{ .State.service }}
         type: ClusterIP
         ports:
-        - port: 6379
-          targetPort: 6379
+        - port: {{ .Init.port }}
+          targetPort: {{ .Init.port }}

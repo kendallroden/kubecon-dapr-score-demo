@@ -5,6 +5,8 @@
     randomVHost: vhost-{{ randAlpha 8 }}
     randomUsername: user-{{ randAlpha 8 }}
     randomPassword: {{ randAlphaNum 16 | quote }}
+    port: 5672
+    managementPort: 15672
   state: |
     service: rabbitmq-{{ .SourceWorkload }}-{{ substr 0 8 .Guid | lower }}
     vhost: {{ dig "vhost" .Init.randomVHost .State | quote }}
@@ -22,7 +24,7 @@
         version: v1
         metadata:
         - name: connectionString
-          value: "amqp://{{ .State.service }}:5672"
+          value: "amqp://{{ .State.service }}:{{ .Init.port }}"
         - name: protocol
           value: amqp
         - name: hostname
@@ -77,9 +79,9 @@
                 image: rabbitmq:3-management
                 ports:
                   - name: amqp
-                    containerPort: 5672
+                    containerPort: {{ .Init.port }}
                   - name: management
-                    containerPort: 15672
+                    containerPort: {{ .Init.managementPort }}
                 envFrom:
                   - secretRef:
                       name: {{ .State.service }}-secret
@@ -117,11 +119,11 @@
           app.kubernetes.io/instance: {{ .State.service }}
       spec:
         ports:
-          - port: 5672
-            targetPort: 5672
+          - port: {{ .Init.port }}
+            targetPort: {{ .Init.port }}
             name: amqp
-          - port: 15672
-            targetPort: 15672
+          - port: {{ .Init.managementPort }}
+            targetPort: {{ .Init.managementPort }}
             name: management
         selector:
           app.kubernetes.io/instance: {{ .State.service }}
