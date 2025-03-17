@@ -1,5 +1,5 @@
-# Downloaded from https://raw.githubusercontent.com/score-spec/community-provisioners/refs/heads/main/score-compose/10-redis-dapr-state-store.provisioners.yaml at 2025-03-08 20:38:01.783137261 +0000 UTC m=+0.363557541
 - uri: template://default-provisioners/dapr-subscription
+  description: "FIXME"
   type: dapr-subscription
   class: default
   init: |

@@ -1,4 +1,5 @@
 - uri: template://default-provisioners/redis-dapr-pubsub
+  description: "FIXME"
   type: dapr-pubsub
   class: default
   init: |

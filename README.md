@@ -1,3 +1,13 @@
+```mermaid
+flowchart TD
+    inventory-->state-store-->redis{redis}
+    notifications-->subscription-->pubsub
+    order-processor-->pubsub-->rabbitmq{rabbitmq}
+    order-processor-->inventory
+    order-processor-->payments
+    order-processor-->shipping
+```
+
 # Dapr order solution
 
 The end-to-end solution is comprised of five services:
