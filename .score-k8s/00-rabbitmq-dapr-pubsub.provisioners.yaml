@@ -16,7 +16,7 @@
     - apiVersion: dapr.io/v1alpha1
       kind: Component
       metadata:
-        name: {{ .State.serviceName }}
+        name: {{ .State.service }}
       spec:
         type: pubsub.rabbitmq
         version: v1
