@@ -1,19 +1,37 @@
 ```mermaid
 flowchart TD
-    inventory-->state-store-->redis{redis}
-    notifications-->subscription-->pubsub
+    inventory-->state-store([StateStore])
+    notifications-->subscription-->pubsub([PubSub])
     order-processor-->state-store
-    order-processor-->pubsub-->rabbitmq{redis}
+    order-processor-->pubsub
     order-processor-->inventory
-    order-processor-->payments
-    order-processor-->shipping
 ```
 
-## `score-compose`
+## Deploy locally with `score-compose`
+
+[![Open in GitHub Codespaces](https://github.com/codespaces/badge.svg)](https://github.com/codespaces/new/kendallroden/kubecon-dapr-score-demo?hide_repo_select=true&ref=score-setup)
+
+```mermaid
+flowchart TD
+    inventory-->state-store([StateStore])-->redis-statestore[(Redis)]
+    notifications-->subscription([Subscription])-->pubsub([PubSub])
+    order-processor-->state-store
+    order-processor-->pubsub-->redis-pubsub[(Redis)]
+    order-processor-->inventory
+```
 
 ```bash
 make compose-up
 ```
+
+Test `inventory`:
+```bash
+curl -X POST $(score-compose resources get-outputs dns.default#inventory.dns --format '{{ .host }}:8080/inventory/restock')
+
+curl $(score-compose resources get-outputs dns.default#inventory.dns --format '{{ .host }}:8080/inventory')
+```
+
+<details><summary>Details</summary>
 
 ```bash
 docker ps
@@ -44,20 +62,50 @@ score-compose resources list
 +------------------------------------------------------+-------------+
 | dapr-state-store.default#inventory.inventory-state   | name        |
 +------------------------------------------------------+-------------+
+| dns.default#inventory.dns                            | host        |
++------------------------------------------------------+-------------+
 | dapr-subscription.default#notifications.subscription | name, topic |
++------------------------------------------------------+-------------+
+| route.default#inventory.route                        |             |
 +------------------------------------------------------+-------------+
 ```
 
-## `score-k8s`
+</details>
+
+## Deploy in Development with `score-k8s`
+
+[![Open in GitHub Codespaces](https://github.com/codespaces/badge.svg)](https://github.com/codespaces/new/kendallroden/kubecon-dapr-score-demo?hide_repo_select=true&ref=score-setup)
+
+<details><summary>Prerequisites</summary>
 
 ```bash
 make kind-create-cluster
 make kind-load-image
 ```
 
+</details>
+
+```mermaid
+flowchart TD
+    inventory-->state-store([StateStore])-->redis-statestore[(Redis)]
+    notifications-->subscription([Subscription])-->pubsub([PubSub])
+    order-processor-->state-store
+    order-processor-->pubsub-->redis-pubsub[(Redis)]
+    order-processor-->inventory
+```
+
 ```bash
 make k8s-up
 ```
+
+Test `inventory`:
+```bash
+curl -X POST $(score-k8s resources get-outputs dns.default#inventory.dns --format '{{ .host }}/inventory/restock')
+
+curl $(score-k8s resources get-outputs dns.default#inventory.dns --format '{{ .host }}/inventory')
+```
+
+<details><summary>Details</summary>
 
 ```bash
 kubectl get all
@@ -65,42 +113,42 @@ kubectl get all
 
 ```none
 NAME                                   READY   STATUS    RESTARTS      AGE
-pod/inventory-6dcf6f4d96-ss2fd         2/2     Running   1 (93s ago)   102s
-pod/notifications-5d6c4d589b-n8xjh     2/2     Running   1 (92s ago)   102s
-pod/order-processor-5b68654df8-8c5dq   2/2     Running   1 (93s ago)   102s
-pod/payments-757d6dc5c5-w5sq9          2/2     Running   1 (91s ago)   102s
-pod/redis-inventory-1c8b79ab-0         1/1     Running   0             103s
-pod/redis-notifications-fbae7e51-0     1/1     Running   0             103s
-pod/shipping-8cbf999fd-hxcj7           2/2     Running   1 (93s ago)   102s
+pod/inventory-6dcf6f4d96-ss2fd         2/2     Running   4 (38m ago)   10h
+pod/notifications-5d6c4d589b-n8xjh     2/2     Running   4 (38m ago)   10h
+pod/order-processor-5b68654df8-8c5dq   2/2     Running   4 (38m ago)   10h
+pod/payments-757d6dc5c5-w5sq9          2/2     Running   4 (38m ago)   10h
+pod/redis-inventory-1c8b79ab-0         1/1     Running   1 (39m ago)   10h
+pod/redis-notifications-fbae7e51-0     1/1     Running   1 (39m ago)   10h
+pod/shipping-8cbf999fd-hxcj7           2/2     Running   4 (38m ago)   10h
 
 NAME                                   TYPE        CLUSTER-IP      EXTERNAL-IP   PORT(S)                               AGE
-service/inventory                      ClusterIP   10.96.182.178   <none>        3002/TCP                              102s
-service/inventory-dapr                 ClusterIP   None            <none>        80/TCP,50001/TCP,50002/TCP,9090/TCP   102s
-service/kubernetes                     ClusterIP   10.96.0.1       <none>        443/TCP                               19h
-service/notifications-dapr             ClusterIP   None            <none>        80/TCP,50001/TCP,50002/TCP,9090/TCP   103s
-service/order-processor-dapr           ClusterIP   None            <none>        80/TCP,50001/TCP,50002/TCP,9090/TCP   102s
-service/payments-dapr                  ClusterIP   None            <none>        80/TCP,50001/TCP,50002/TCP,9090/TCP   102s
-service/redis-inventory-1c8b79ab       ClusterIP   10.96.216.157   <none>        6379/TCP                              103s
-service/redis-notifications-fbae7e51   ClusterIP   10.96.193.202   <none>        6379/TCP                              103s
-service/shipping-dapr                  ClusterIP   None            <none>        80/TCP,50001/TCP,50002/TCP,9090/TCP   102s
+service/inventory                      ClusterIP   10.96.182.178   <none>        3002/TCP                              10h
+service/inventory-dapr                 ClusterIP   None            <none>        80/TCP,50001/TCP,50002/TCP,9090/TCP   10h
+service/kubernetes                     ClusterIP   10.96.0.1       <none>        443/TCP                               30h
+service/notifications-dapr             ClusterIP   None            <none>        80/TCP,50001/TCP,50002/TCP,9090/TCP   10h
+service/order-processor-dapr           ClusterIP   None            <none>        80/TCP,50001/TCP,50002/TCP,9090/TCP   10h
+service/payments-dapr                  ClusterIP   None            <none>        80/TCP,50001/TCP,50002/TCP,9090/TCP   10h
+service/redis-inventory-1c8b79ab       ClusterIP   10.96.216.157   <none>        6379/TCP                              10h
+service/redis-notifications-fbae7e51   ClusterIP   10.96.193.202   <none>        6379/TCP                              10h
+service/shipping-dapr                  ClusterIP   None            <none>        80/TCP,50001/TCP,50002/TCP,9090/TCP   10h
 
 NAME                              READY   UP-TO-DATE   AVAILABLE   AGE
-deployment.apps/inventory         1/1     1            1           102s
-deployment.apps/notifications     1/1     1            1           103s
-deployment.apps/order-processor   1/1     1            1           103s
-deployment.apps/payments          1/1     1            1           102s
-deployment.apps/shipping          1/1     1            1           102s
+deployment.apps/inventory         1/1     1            1           10h
+deployment.apps/notifications     1/1     1            1           10h
+deployment.apps/order-processor   1/1     1            1           10h
+deployment.apps/payments          1/1     1            1           10h
+deployment.apps/shipping          1/1     1            1           10h
 
 NAME                                         DESIRED   CURRENT   READY   AGE
-replicaset.apps/inventory-6dcf6f4d96         1         1         1       102s
-replicaset.apps/notifications-5d6c4d589b     1         1         1       103s
-replicaset.apps/order-processor-5b68654df8   1         1         1       102s
-replicaset.apps/payments-757d6dc5c5          1         1         1       102s
-replicaset.apps/shipping-8cbf999fd           1         1         1       102s
+replicaset.apps/inventory-6dcf6f4d96         1         1         1       10h
+replicaset.apps/notifications-5d6c4d589b     1         1         1       10h
+replicaset.apps/order-processor-5b68654df8   1         1         1       10h
+replicaset.apps/payments-757d6dc5c5          1         1         1       10h
+replicaset.apps/shipping-8cbf999fd           1         1         1       10h
 
 NAME                                            READY   AGE
-statefulset.apps/redis-inventory-1c8b79ab       1/1     103s
-statefulset.apps/redis-notifications-fbae7e51   1/1     103s
+statefulset.apps/redis-inventory-1c8b79ab       1/1     10h
+statefulset.apps/redis-notifications-fbae7e51   1/1     10h
 ```
 
 ```bash
@@ -115,6 +163,16 @@ score-k8s resources list
 +------------------------------------------------------+-------------+
 | dapr-state-store.default#inventory.inventory-state   | name        |
 +------------------------------------------------------+-------------+
+| dns.default#inventory.dns                            | host        |
++------------------------------------------------------+-------------+
 | dapr-subscription.default#notifications.subscription | name, topic |
 +------------------------------------------------------+-------------+
+| route.default#inventory.route                        |             |
++------------------------------------------------------+-------------+
 ```
+
+</details>
+
+## Deploy in Development with `score-k8s`
+
+FIXME

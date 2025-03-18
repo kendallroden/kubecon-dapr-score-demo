@@ -1,5 +1,16 @@
 # Dapr order solution
 
+```mermaid
+flowchart TD
+    inventory-->state-store([StateStore])
+    notifications-->subscription-->pubsub([PubSub])
+    order-processor-->state-store
+    order-processor-->pubsub
+    order-processor-->inventory
+    order-processor-->payments
+    order-processor-->shipping
+```
+
 The end-to-end solution is comprised of five services:
 
 - **order-processor**: Contains the order process workflow definition and all associated activity methods which will be executed as part of the workflow sequence using the Dapr Workflow API.
