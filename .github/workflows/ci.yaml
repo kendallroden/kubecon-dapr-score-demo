@@ -16,9 +16,9 @@ jobs:
           file: score-compose
           token: ${{ secrets.GITHUB_TOKEN }}
           version: latest
-      - name: make compose-up
+      - name: make deploy-local
         run: |
-          make compose-up
+          make deploy-local
       #- name: make compose-test
       #  run: |
       #    make compose-test
@@ -34,7 +34,7 @@ jobs:
           file: score-k8s
           token: ${{ secrets.GITHUB_TOKEN }}
           version: latest
-      - name: make k8s-up
-        id: k8s-up
+      - name: make deploy-development
+        id: deploy-development
         run: |
-          make k8s-up
+          make deploy-development
