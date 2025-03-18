@@ -22,6 +22,7 @@ flowchart TD
     end
 ```
 
+Deploy the Score files via `score-compose` and Docker Compose:
 ```bash
 make deploy-local
 ```
@@ -97,6 +98,7 @@ flowchart TD
     end
 ```
 
+Deploy the Score files via `score-k8s` in the `development` Namespace:
 ```bash
 make deploy-development
 ```
@@ -105,9 +107,9 @@ Test `inventory`:
 ```bash
 cd development
 
-curl -X POST $(score-k8s resources get-outputs dns.default#inventory.dns --format '{{ .host }}/inventory/restock')
+curl -X POST $(score-k8s resources get-outputs dns.default#inventory.dns --format '{{ .host }}:80/inventory/restock')
 
-curl $(score-k8s resources get-outputs dns.default#inventory.dns --format '{{ .host }}/inventory')
+curl $(score-k8s resources get-outputs dns.default#inventory.dns --format '{{ .host }}:80/inventory')
 ```
 
 <details><summary>Details</summary>
@@ -201,6 +203,7 @@ flowchart TD
     end
 ```
 
+Deploy the Score files via `score-k8s` in the `staging` Namespace:
 ```bash
 make deploy-staging
 ```
@@ -209,9 +212,9 @@ Test `inventory`:
 ```bash
 cd staging
 
-curl -X POST $(score-k8s resources get-outputs dns.default#inventory.dns --format '{{ .host }}/inventory/restock')
+curl -X POST $(score-k8s resources get-outputs dns.default#inventory.dns --format '{{ .host }}:80/inventory/restock')
 
-curl $(score-k8s resources get-outputs dns.default#inventory.dns --format '{{ .host }}/inventory')
+curl $(score-k8s resources get-outputs dns.default#inventory.dns --format '{{ .host }}:80/inventory')
 ```
 
 <details><summary>Details</summary>
@@ -309,4 +312,4 @@ flowchart TD
     state-store-->redis-statestore
 ```
 
-FIXME
+_FIXME - more to come here, stay tuned!_
