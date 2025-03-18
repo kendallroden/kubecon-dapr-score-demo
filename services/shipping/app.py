@@ -47,7 +47,7 @@ def hello():
 
 def main():
     # Start the Flask app server
-    app.run(port=APP_PORT, debug=True, use_reloader=False)
+    app.run(host='0.0.0.0', port=APP_PORT, debug=True, use_reloader=False)
 
 
 if __name__ == "__main__":
