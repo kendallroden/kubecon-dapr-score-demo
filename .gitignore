@@ -231,7 +231,7 @@ pyrightconfig.json
 # Custom rules (everything added below won't be overriden by 'Generate .gitignore File' if you use 'Update' option)
 
 # Score
-compose.yaml
-.score-compose/*
-.score-k8s/*
-manifests.yaml
+**/compose.yaml
+**/.score-compose/*
+**/.score-k8s/*
+**/manifests.yaml

@@ -23,7 +23,7 @@ flowchart TD
 ```
 
 ```bash
-make compose-up
+make deploy-local
 ```
 
 Test `inventory`:
@@ -98,11 +98,13 @@ flowchart TD
 ```
 
 ```bash
-make k8s-up
+make deploy-development
 ```
 
 Test `inventory`:
 ```bash
+cd development
+
 curl -X POST $(score-k8s resources get-outputs dns.default#inventory.dns --format '{{ .host }}/inventory/restock')
 
 curl $(score-k8s resources get-outputs dns.default#inventory.dns --format '{{ .host }}/inventory')
