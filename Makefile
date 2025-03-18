@@ -106,4 +106,4 @@ deploy-staging: staging/manifests.yaml
 ## Delete the deployment of the local container in Kubernetes.
 .PHONY: cleanup-staging
 cleanup-staging:
-	cd staging && kubectl delete -f manifests.yaml -n devestaginglopment
+	cd staging && kubectl delete -f manifests.yaml -n staging

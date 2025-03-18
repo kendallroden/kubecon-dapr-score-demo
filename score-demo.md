@@ -113,7 +113,7 @@ curl $(score-k8s resources get-outputs dns.default#inventory.dns --format '{{ .h
 <details><summary>Details</summary>
 
 ```bash
-kubectl get all
+kubectl get all -n development
 ```
 
 ```none
@@ -201,7 +201,85 @@ flowchart TD
     end
 ```
 
-FIXME
+```bash
+make deploy-staging
+```
+
+Test `inventory`:
+```bash
+cd staging
+
+curl -X POST $(score-k8s resources get-outputs dns.default#inventory.dns --format '{{ .host }}/inventory/restock')
+
+curl $(score-k8s resources get-outputs dns.default#inventory.dns --format '{{ .host }}/inventory')
+```
+
+<details><summary>Details</summary>
+
+```bash
+kubectl get all -n staging
+```
+
+```none
+NAME                                    READY   STATUS    RESTARTS      AGE
+pod/inventory-5696b67fd5-fgdf6          2/2     Running   3 (37m ago)   37m
+pod/notifications-c95954c6-knp2d        2/2     Running   3 (37m ago)   37m
+pod/order-processor-8d5974f96-6xdb4     2/2     Running   3 (37m ago)   37m
+pod/payments-655678dbd6-5g5hr           2/2     Running   3 (37m ago)   37m
+pod/rabbitmq-notifications-1c707141-0   1/1     Running   0             37m
+pod/redis-inventory-bc3d32c1-0          1/1     Running   0             37m
+pod/shipping-6c949f5b4-zfpql            2/2     Running   3 (37m ago)   37m
+
+NAME                                      TYPE        CLUSTER-IP      EXTERNAL-IP   PORT(S)                               AGE
+service/inventory                         ClusterIP   10.96.107.53    <none>        3002/TCP                              37m
+service/inventory-dapr                    ClusterIP   None            <none>        80/TCP,50001/TCP,50002/TCP,9090/TCP   37m
+service/notifications-dapr                ClusterIP   None            <none>        80/TCP,50001/TCP,50002/TCP,9090/TCP   37m
+service/order-processor-dapr              ClusterIP   None            <none>        80/TCP,50001/TCP,50002/TCP,9090/TCP   37m
+service/payments-dapr                     ClusterIP   None            <none>        80/TCP,50001/TCP,50002/TCP,9090/TCP   37m
+service/rabbitmq-notifications-1c707141   ClusterIP   10.96.220.253   <none>        5672/TCP,15672/TCP                    37m
+service/redis-inventory-bc3d32c1          ClusterIP   10.96.254.139   <none>        6379/TCP                              37m
+service/shipping-dapr                     ClusterIP   None            <none>        80/TCP,50001/TCP,50002/TCP,9090/TCP   37m
+
+NAME                              READY   UP-TO-DATE   AVAILABLE   AGE
+deployment.apps/inventory         1/1     1            1           37m
+deployment.apps/notifications     1/1     1            1           37m
+deployment.apps/order-processor   1/1     1            1           37m
+deployment.apps/payments          1/1     1            1           37m
+deployment.apps/shipping          1/1     1            1           37m
+
+NAME                                        DESIRED   CURRENT   READY   AGE
+replicaset.apps/inventory-5696b67fd5        1         1         1       37m
+replicaset.apps/notifications-c95954c6      1         1         1       37m
+replicaset.apps/order-processor-8d5974f96   1         1         1       37m
+replicaset.apps/payments-655678dbd6         1         1         1       37m
+replicaset.apps/shipping-6c949f5b4          1         1         1       37m
+
+NAME                                               READY   AGE
+statefulset.apps/rabbitmq-notifications-1c707141   1/1     37m
+statefulset.apps/redis-inventory-bc3d32c1          1/1     37m
+```
+
+```bash
+score-k8s resources list
+```
+
+```none
++------------------------------------------------------+-------------+
+|                         UID                          |   OUTPUTS   |
++------------------------------------------------------+-------------+
+| dapr-pubsub.default#pubsub                           | name        |
++------------------------------------------------------+-------------+
+| dapr-state-store.default#inventory.inventory-state   | name        |
++------------------------------------------------------+-------------+
+| dns.default#inventory.dns                            | host        |
++------------------------------------------------------+-------------+
+| dapr-subscription.default#notifications.subscription | name, topic |
++------------------------------------------------------+-------------+
+| route.default#inventory.route                        |             |
++------------------------------------------------------+-------------+
+```
+
+</details>
 
 ## Deploy in Production with `score-k8s`
 
