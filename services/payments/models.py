@@ -9,13 +9,6 @@ class AmountMoney(BaseModel):
     amount: int
     currency: str
 
-# Define AppFeeMoney class (optional fee)
-
-
-class AppFeeMoney(BaseModel):
-    amount: int
-    currency: str
-
 
 class CreatePayment(BaseModel):
     amount_money: AmountMoney  # Reference to AmountMoney class
@@ -31,9 +24,3 @@ class Order:
     customer: str
     items: list[str]
     total: float
-
-
-@dataclass
-class PaymentResult:
-    success: bool
-    message: str
