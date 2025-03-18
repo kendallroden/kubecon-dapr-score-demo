@@ -19,3 +19,11 @@ service:
 resources:
   inventory-state:
     type: dapr-state-store
+  dns:
+    type: dns
+  route:
+    type: route
+    params:
+      host: ${resources.dns.host}
+      path: /
+      port: 3002
