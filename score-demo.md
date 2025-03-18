@@ -1,3 +1,5 @@
+[![Open in GitHub Codespaces](https://github.com/codespaces/badge.svg)](https://github.com/codespaces/new/kendallroden/kubecon-dapr-score-demo?hide_repo_select=true&ref=score-setup)
+
 ```mermaid
 flowchart TD
     inventory-->state-store([StateStore])
@@ -9,15 +11,15 @@ flowchart TD
 
 ## Deploy locally with `score-compose`
 
-[![Open in GitHub Codespaces](https://github.com/codespaces/badge.svg)](https://github.com/codespaces/new/kendallroden/kubecon-dapr-score-demo?hide_repo_select=true&ref=score-setup)
-
 ```mermaid
 flowchart TD
-    inventory-->state-store([StateStore])-->redis-statestore[(Redis)]
-    notifications-->subscription([Subscription])-->pubsub([PubSub])
-    order-processor-->state-store
-    order-processor-->pubsub-->redis-pubsub[(Redis)]
-    order-processor-->inventory
+    subgraph Docker
+        inventory-->state-store([StateStore])-->redis-statestore[(Redis)]
+        notifications-->subscription([Subscription])-->pubsub([PubSub])
+        order-processor-->state-store
+        order-processor-->pubsub-->redis-pubsub[(Redis)]
+        order-processor-->inventory
+    end
 ```
 
 ```bash
@@ -74,8 +76,6 @@ score-compose resources list
 
 ## Deploy in Development with `score-k8s`
 
-[![Open in GitHub Codespaces](https://github.com/codespaces/badge.svg)](https://github.com/codespaces/new/kendallroden/kubecon-dapr-score-demo?hide_repo_select=true&ref=score-setup)
-
 <details><summary>Prerequisites</summary>
 
 ```bash
@@ -87,11 +87,13 @@ make kind-load-image
 
 ```mermaid
 flowchart TD
-    inventory-->state-store([StateStore])-->redis-statestore[(Redis)]
-    notifications-->subscription([Subscription])-->pubsub([PubSub])
-    order-processor-->state-store
-    order-processor-->pubsub-->redis-pubsub[(Redis)]
-    order-processor-->inventory
+    subgraph Kubernetes
+        inventory-->state-store([StateStore])-->redis-statestore[(Redis)]
+        notifications-->subscription([Subscription])-->pubsub([PubSub])
+        order-processor-->state-store
+        order-processor-->pubsub-->redis-pubsub[(Redis)]
+        order-processor-->inventory
+    end
 ```
 
 ```bash
