@@ -32,6 +32,9 @@ spec:
   - name: http
     port: 80
     protocol: HTTP
+    allowedRoutes:
+      namespaces:
+        from: All
 EOF
 
 helm repo add dapr https://dapr.github.io/helm-charts/
