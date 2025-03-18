@@ -78,6 +78,7 @@ score-compose resources list
 
 <details><summary>Prerequisites</summary>
 
+If you don't have a Kubernetes cluster that you have access too, you can create a Kind cluster like this:
 ```bash
 make kind-create-cluster
 make kind-load-image
@@ -87,7 +88,7 @@ make kind-load-image
 
 ```mermaid
 flowchart TD
-    subgraph Kubernetes
+    subgraph Kubernetes - development
         inventory-->state-store([StateStore])-->redis-statestore[(Redis)]
         notifications-->subscription([Subscription])-->pubsub([PubSub])
         order-processor-->state-store
@@ -175,6 +176,57 @@ score-k8s resources list
 
 </details>
 
-## Deploy in Development with `score-k8s`
+## Deploy in Staging with `score-k8s`
+
+<details><summary>Prerequisites</summary>
+
+If you don't have a Kubernetes cluster that you have access too, you can create a Kind cluster like this:
+```bash
+make kind-create-cluster
+make kind-load-image
+```
+
+</details>
+
+```mermaid
+flowchart TD
+    subgraph Kubernetes - staging
+        inventory-->state-store([StateStore])-->redis-statestore[(Redis)]
+        notifications-->subscription([Subscription])-->pubsub([PubSub])
+        order-processor-->state-store
+        order-processor-->pubsub-->redis-pubsub[(RabbitMQ)]
+        order-processor-->inventory
+    end
+```
+
+FIXME
+
+## Deploy in Production with `score-k8s`
+
+<details><summary>Prerequisites</summary>
+
+If you don't have a Kubernetes cluster that you have access too, you can create a Kind cluster like this:
+```bash
+make kind-create-cluster
+make kind-load-image
+```
+
+</details>
+
+```mermaid
+flowchart TD
+    subgraph Kubernetes - production
+        inventory-->state-store([StateStore])
+        notifications-->subscription([Subscription])-->pubsub([PubSub])
+        order-processor-->state-store
+        order-processor-->pubsub
+        order-processor-->inventory
+    end
+    subgraph Azure
+        redis-statestore[(Azure Redis)]
+        pubsub-->redis-pubsub[(Azure Service Bus)]
+    end
+    state-store-->redis-statestore
+```
 
 FIXME
