@@ -1,0 +1,50 @@
+- uri: template://community-provisioners/azure-redis-dapr-state-store-with-actor
+  type: dapr-state-store
+  init: |
+    password: FIXME
+    port: 6380
+    host: FIXME
+    username: ""
+  state: |
+    service: redis-{{ .SourceWorkload }}-{{ substr 0 8 .Guid | lower }}
+  outputs: |
+    name: {{ .State.service }}
+    host: {{ .Init.host }}
+    port: {{ .Init.port }}
+    username: {{ .Init.username }}
+    password: {{ .Init.password }}
+  manifests: |
+    - apiVersion: dapr.io/v1alpha1
+      kind: Component
+      metadata:
+        name: {{ .State.service }}
+      spec:
+        type: state.redis
+        version: v1
+        metadata:
+        - name: redisHost
+          value: {{ .Init.host }}:{{ .Init.port }}
+        - name: redisPassword
+          value: {{ .Init.password }}
+        - name: enableTLS
+          value: true
+        - name: redisDB
+          value: 1
+    - apiVersion: dapr.io/v1alpha1
+      kind: Component
+      metadata:
+        name: {{ .State.service }}-actor
+      spec:
+        type: state.redis
+        version: v1
+        metadata:
+        - name: redisHost
+          value: {{ .Init.host }}:{{ .Init.port }}
+        - name: redisPassword
+          value: {{ .Init.password }}
+        - name: enableTLS
+          value: true
+        - name: actorStateStore
+          value: "true"
+        - name: redisDB
+          value: 0

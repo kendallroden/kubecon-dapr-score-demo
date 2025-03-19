@@ -59,7 +59,6 @@ development/.score-k8s/state.yaml:
 	mkdir development -p
 	cd development && \
 	score-k8s init --no-sample \
-		--provisioners https://raw.githubusercontent.com/score-spec/community-provisioners/refs/heads/main/score-k8s/10-redis-dapr-state-store.provisioners.yaml \
 		--provisioners https://raw.githubusercontent.com/score-spec/community-provisioners/refs/heads/main/score-k8s/10-redis-dapr-pubsub.provisioners.yaml \
 		--provisioners https://raw.githubusercontent.com/score-spec/community-provisioners/refs/heads/main/score-k8s/10-dapr-subscription.provisioners.yaml \
 		--provisioners https://raw.githubusercontent.com/score-spec/community-provisioners/refs/heads/main/score-k8s/10-shared-gateway-httproute.provisioners.yaml \
@@ -88,10 +87,10 @@ staging/.score-k8s/state.yaml:
 	mkdir staging -p
 	cd staging && \
 	score-k8s init --no-sample \
-		--provisioners https://raw.githubusercontent.com/score-spec/community-provisioners/refs/heads/main/score-k8s/10-redis-dapr-state-store.provisioners.yaml \
 		--provisioners https://raw.githubusercontent.com/score-spec/community-provisioners/refs/heads/main/score-k8s/10-redis-dapr-pubsub.provisioners.yaml \
 		--provisioners https://raw.githubusercontent.com/score-spec/community-provisioners/refs/heads/main/score-k8s/10-dapr-subscription.provisioners.yaml \
-		--provisioners https://raw.githubusercontent.com/score-spec/community-provisioners/refs/heads/main/score-k8s/10-shared-gateway-httproute.provisioners.yaml
+		--provisioners https://raw.githubusercontent.com/score-spec/community-provisioners/refs/heads/main/score-k8s/10-shared-gateway-httproute.provisioners.yaml \
+		--provisioners ../score-provisioners/00-redis-dapr-state-store-with-actor-k8s.provisioners.yaml
 
 staging/manifests.yaml: services/inventory/score.yaml services/notifications/score.yaml services/order-processor/score.yaml services/payments/score.yaml services/shipping/score.yaml staging/.score-k8s/state.yaml Makefile
 	cd staging && score-k8s generate ../services/inventory/score.yaml --image inventory:local
@@ -111,3 +110,32 @@ deploy-staging: staging/manifests.yaml
 .PHONY: cleanup-staging
 cleanup-staging:
 	cd staging && kubectl delete -f manifests.yaml -n staging
+
+
+production/.score-k8s/state.yaml:
+	mkdir production -p
+	cd production && \
+	score-k8s init --no-sample \
+		--provisioners https://raw.githubusercontent.com/score-spec/community-provisioners/refs/heads/main/score-k8s/10-redis-dapr-pubsub.provisioners.yaml \
+		--provisioners https://raw.githubusercontent.com/score-spec/community-provisioners/refs/heads/main/score-k8s/10-dapr-subscription.provisioners.yaml \
+		--provisioners https://raw.githubusercontent.com/score-spec/community-provisioners/refs/heads/main/score-k8s/10-shared-gateway-httproute.provisioners.yaml \
+		--provisioners ../score-provisioners/00-azure-redis-dapr-state-store-with-actor-k8s.provisioners.yaml
+
+production/manifests.yaml: services/inventory/score.yaml services/notifications/score.yaml services/order-processor/score.yaml services/payments/score.yaml services/shipping/score.yaml production/.score-k8s/state.yaml Makefile
+	cd production && score-k8s generate ../services/inventory/score.yaml --image inventory:local
+	cd production && score-k8s generate ../services/notifications/score.yaml --image notifications:local
+	cd production && score-k8s generate ../services/order-processor/score.yaml --image order-processor:local
+	cd production && score-k8s generate ../services/payments/score.yaml --image payments:local
+	cd production && score-k8s generate ../services/shipping/score.yaml --image shipping:local
+
+## Generate a manifests.yaml file from the score spec, deploy it to Kubernetes and wait for the Pods to be Ready.
+.PHONY: deploy-production
+deploy-production: production/manifests.yaml
+	kubectl create namespace production || true
+	cd production && kubectl apply -f manifests.yaml -n production
+	sleep 5
+
+## Delete the deployment of the local container in Kubernetes.
+.PHONY: cleanup-production
+cleanup-production:
+	cd production && kubectl delete -f manifests.yaml -n production

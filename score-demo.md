@@ -52,16 +52,21 @@ docker ps
 ```
 
 ```none
-CONTAINER ID   IMAGE                                                     COMMAND                  CREATED          STATUS          PORTS                                              NAMES
-1e66310246ae   kubecon-dapr-score-demo-shipping-shipping                 "python app.py"          45 seconds ago   Up 41 seconds   3004/tcp                                           kubecon-dapr-score-demo-shipping-shipping-1
-bc1a25146843   kubecon-dapr-score-demo-payments-payments                 "python app.py"          45 seconds ago   Up 42 seconds   3003/tcp                                           kubecon-dapr-score-demo-payments-payments-1
-85d575604017   kubecon-dapr-score-demo-inventory-inventory               "python app.py"          45 seconds ago   Up 42 seconds   3002/tcp                                           kubecon-dapr-score-demo-inventory-inventory-1
-eeab45d7fc92   kubecon-dapr-score-demo-order-processor-order-processor   "python app.py"          45 seconds ago   Up 42 seconds   3000/tcp                                           kubecon-dapr-score-demo-order-processor-order-processor-1
-0bd899f888ae   kubecon-dapr-score-demo-notifications-notifications       "python app.py"          45 seconds ago   Up 41 seconds   3001/tcp                                           kubecon-dapr-score-demo-notifications-notifications-1
-866b9a6b6a44   redis:7-alpine                                            "redis-server /usr/l…"   45 seconds ago   Up 44 seconds   6379/tcp                                           kubecon-dapr-score-demo-redis-ToRXZ1-1
-e60e7eb1728a   redis:7-alpine                                            "redis-server /usr/l…"   45 seconds ago   Up 44 seconds   6379/tcp                                           kubecon-dapr-score-demo-redis-utwSSY-1
-c3ffeaa9a533   nginx:1-alpine                                            "/docker-entrypoint.…"   45 seconds ago   Up 44 seconds   0.0.0.0:8080->80/tcp, [::]:8080->80/tcp            kubecon-dapr-score-demo-routing-J5Pfg8-1
-5b7c3eb44983   daprio/dapr                                               "./placement -port 5…"   45 seconds ago   Up 44 seconds   0.0.0.0:50006->50006/tcp, :::50006->50006/tcp      kubecon-dapr-score-demo-placement-1
+CONTAINER ID   IMAGE                                                     COMMAND                  CREATED        STATUS       PORTS                                              NAMES
+c063ca6d4e62   daprio/daprd:latest                                       "./daprd --app-id=or…"   2 hours ago    Up 2 hours                                                      kubecon-dapr-score-demo-order-processor-order-processor-sidecar-1
+5cc66364955c   daprio/daprd:latest                                       "./daprd --app-id=in…"   2 hours ago    Up 2 hours                                                      kubecon-dapr-score-demo-inventory-inventory-sidecar-1
+e2d9e1dba787   kubecon-dapr-score-demo-order-processor-order-processor   "python app.py"          2 hours ago    Up 2 hours   3000/tcp                                           kubecon-dapr-score-demo-order-processor-order-processor-1
+064a699162c2   kubecon-dapr-score-demo-inventory-inventory               "python app.py"          2 hours ago    Up 2 hours   3002/tcp                                           kubecon-dapr-score-demo-inventory-inventory-1
+24eddeb9c813   redis:7-alpine                                            "redis-server /usr/l…"   2 hours ago    Up 2 hours   6379/tcp                                           kubecon-dapr-score-demo-redis-UwZoaF-1
+7c6240d8e00c   redis:7-alpine                                            "redis-server /usr/l…"   2 hours ago    Up 2 hours   6379/tcp                                           kubecon-dapr-score-demo-redis-MsBXMw-1
+361f44246faa   nginx:1-alpine                                            "/docker-entrypoint.…"   2 hours ago    Up 2 hours   0.0.0.0:8080->80/tcp, [::]:8080->80/tcp            kubecon-dapr-score-demo-routing-0uezpt-1
+47274726ee14   daprio/daprd:latest                                       "./daprd --app-id=sh…"   2 hours ago    Up 2 hours                                                      kubecon-dapr-score-demo-shipping-shipping-sidecar-1
+873eed071832   daprio/daprd:latest                                       "./daprd --app-id=no…"   2 hours ago    Up 2 hours                                                      kubecon-dapr-score-demo-notifications-notifications-sidecar-1
+f4bfcc6ede66   daprio/daprd:latest                                       "./daprd --app-id=pa…"   2 hours ago    Up 2 hours                                                      kubecon-dapr-score-demo-payments-payments-sidecar-1
+ec2595db1884   kubecon-dapr-score-demo-payments-payments                 "python app.py"          2 hours ago    Up 2 hours   3003/tcp                                           kubecon-dapr-score-demo-payments-payments-1
+2b3f9a343bb3   kubecon-dapr-score-demo-notifications-notifications       "python app.py"          2 hours ago    Up 2 hours   3001/tcp                                           kubecon-dapr-score-demo-notifications-notifications-1
+56288f9cd74d   kubecon-dapr-score-demo-shipping-shipping                 "python app.py"          2 hours ago    Up 2 hours   3004/tcp                                           kubecon-dapr-score-demo-shipping-shipping-1
+4fa771709e94   daprio/dapr                                               "./placement --port …"   2 hours ago    Up 2 hours   0.0.0.0:50006->50006/tcp, :::50006->50006/tcp      kubecon-dapr-score-demo-placement-1
 ```
 
 ```bash
@@ -72,15 +77,15 @@ score-compose resources list
 +------------------------------------------------------+-------------+
 |                         UID                          |   OUTPUTS   |
 +------------------------------------------------------+-------------+
-| dapr-pubsub.default#pubsub                           | name        |
+| dapr-pubsub#pubsub                                   | name        |
 +------------------------------------------------------+-------------+
-| dapr-state-store.default#inventory.inventory-state   | name        |
+| dapr-state-store#inventory.inventory-state           | name        |
 +------------------------------------------------------+-------------+
-| dns.default#inventory.dns                            | host        |
+| dns#inventory.dns                                    | host        |
 +------------------------------------------------------+-------------+
-| dapr-subscription.default#notifications.subscription | name, topic |
+| dns#order-processor.dns                              | host        |
 +------------------------------------------------------+-------------+
-| route.default#inventory.route                        |             |
+| dapr-subscription#notifications.subscription         | name, topic |
 +------------------------------------------------------+-------------+
 ```
 
@@ -190,15 +195,15 @@ score-k8s resources list
 +------------------------------------------------------+-------------+
 |                         UID                          |   OUTPUTS   |
 +------------------------------------------------------+-------------+
-| dapr-pubsub.default#pubsub                           | name        |
+| dapr-pubsub#pubsub                                   | name        |
 +------------------------------------------------------+-------------+
-| dapr-state-store.default#inventory.inventory-state   | name        |
+| dapr-state-store#inventory.inventory-state           | name        |
 +------------------------------------------------------+-------------+
-| dns.default#inventory.dns                            | host        |
+| dns#inventory.dns                                    | host        |
 +------------------------------------------------------+-------------+
-| dapr-subscription.default#notifications.subscription | name, topic |
+| dns#order-processor.dns                              | host        |
 +------------------------------------------------------+-------------+
-| route.default#inventory.route                        |             |
+| dapr-subscription#notifications.subscription         | name, topic |
 +------------------------------------------------------+-------------+
 ```
 
@@ -241,6 +246,17 @@ INVENTORY_DNS=$(score-k8s resources get-outputs dns.default#inventory.dns --form
 curl -X POST ${INVENTORY_DNS}/inventory/restock
 
 curl ${INVENTORY_DNS}/inventory
+```
+
+Test `order`:
+```bash
+cd staging
+
+ORDER_DNS=$(score-k8s resources get-outputs dns.default#order-processor.dns --format '{{ .host }}:80')
+
+curl -X POST ${ORDER_DNS}/orders -H "Content-Type: application/json" -d '{"id": "test", "customer": "bob", "items": ["oranges"], "total": 12.00}'
+
+curl ${ORDER_DNS}/orders/FIXME
 ```
 
 <details><summary>Details</summary>
@@ -296,15 +312,15 @@ score-k8s resources list
 +------------------------------------------------------+-------------+
 |                         UID                          |   OUTPUTS   |
 +------------------------------------------------------+-------------+
-| dapr-pubsub.default#pubsub                           | name        |
+| dapr-pubsub#pubsub                                   | name        |
 +------------------------------------------------------+-------------+
-| dapr-state-store.default#inventory.inventory-state   | name        |
+| dapr-state-store#inventory.inventory-state           | name        |
 +------------------------------------------------------+-------------+
-| dns.default#inventory.dns                            | host        |
+| dns#inventory.dns                                    | host        |
 +------------------------------------------------------+-------------+
-| dapr-subscription.default#notifications.subscription | name, topic |
+| dns#order-processor.dns                              | host        |
 +------------------------------------------------------+-------------+
-| route.default#inventory.route                        |             |
+| dapr-subscription#notifications.subscription         | name, topic |
 +------------------------------------------------------+-------------+
 ```
 
@@ -338,4 +354,94 @@ flowchart TD
     state-store-->redis-statestore
 ```
 
-_FIXME - more to come here, stay tuned!_
+Deploy the Score files via `score-k8s` in the `production` Namespace:
+```bash
+make deploy-production
+```
+
+Test `inventory`:
+```bash
+cd production
+
+INVENTORY_DNS=$(score-k8s resources get-outputs dns.default#inventory.dns --format '{{ .host }}:80')
+
+curl -X POST ${INVENTORY_DNS}/inventory/restock
+
+curl ${INVENTORY_DNS}/inventory
+```
+
+Test `order`:
+```bash
+cd production
+
+ORDER_DNS=$(score-k8s resources get-outputs dns.default#order-processor.dns --format '{{ .host }}:80')
+
+curl -X POST ${ORDER_DNS}/orders -H "Content-Type: application/json" -d '{"id": "test", "customer": "bob", "items": ["oranges"], "total": 12.00}'
+
+curl ${ORDER_DNS}/orders/FIXME
+```
+
+<details><summary>Details</summary>
+
+```bash
+kubectl get all -n production
+```
+
+```none
+NAME                                   READY   STATUS    RESTARTS      AGE
+pod/inventory-556954fbd6-z5m48         2/2     Running   1 (10m ago)   10m
+pod/notifications-648b4f9fc-l8z8l      2/2     Running   0             10m
+pod/order-processor-5d8bcbcb9c-8tz4n   2/2     Running   1 (10m ago)   10m
+pod/payments-5597b56cbc-dmjsc          2/2     Running   1 (10m ago)   10m
+pod/redis-notifications-8c65e063-0     1/1     Running   0             10m
+pod/shipping-857fb55c79-hgp64          2/2     Running   0             10m
+
+NAME                                   TYPE        CLUSTER-IP      EXTERNAL-IP   PORT(S)                               AGE
+service/inventory                      ClusterIP   10.96.96.56     <none>        3002/TCP                              10m
+service/inventory-dapr                 ClusterIP   None            <none>        80/TCP,50001/TCP,50002/TCP,9090/TCP   10m
+service/notifications-dapr             ClusterIP   None            <none>        80/TCP,50001/TCP,50002/TCP,9090/TCP   10m
+service/order-processor                ClusterIP   10.96.38.202    <none>        3000/TCP                              10m
+service/order-processor-dapr           ClusterIP   None            <none>        80/TCP,50001/TCP,50002/TCP,9090/TCP   10m
+service/payments-dapr                  ClusterIP   None            <none>        80/TCP,50001/TCP,50002/TCP,9090/TCP   10m
+service/redis-notifications-8c65e063   ClusterIP   10.96.153.121   <none>        6379/TCP                              10m
+service/shipping-dapr                  ClusterIP   None            <none>        80/TCP,50001/TCP,50002/TCP,9090/TCP   10m
+
+NAME                              READY   UP-TO-DATE   AVAILABLE   AGE
+deployment.apps/inventory         1/1     1            1           10m
+deployment.apps/notifications     1/1     1            1           10m
+deployment.apps/order-processor   1/1     1            1           10m
+deployment.apps/payments          1/1     1            1           10m
+deployment.apps/shipping          1/1     1            1           10m
+
+NAME                                         DESIRED   CURRENT   READY   AGE
+replicaset.apps/inventory-556954fbd6         1         1         1       10m
+replicaset.apps/notifications-648b4f9fc      1         1         1       10m
+replicaset.apps/order-processor-5d8bcbcb9c   1         1         1       10m
+replicaset.apps/payments-5597b56cbc          1         1         1       10m
+replicaset.apps/shipping-857fb55c79          1         1         1       10m
+
+NAME                                            READY   AGE
+statefulset.apps/redis-notifications-8c65e063   1/1     10m
+```
+
+```bash
+score-k8s resources list
+```
+
+```none
++------------------------------------------------------+-------------+
+|                         UID                          |   OUTPUTS   |
++------------------------------------------------------+-------------+
+| dapr-pubsub#pubsub                                   | name        |
++------------------------------------------------------+-------------+
+| dapr-state-store#inventory.inventory-state           | name        |
++------------------------------------------------------+-------------+
+| dns#inventory.dns                                    | host        |
++------------------------------------------------------+-------------+
+| dns#order-processor.dns                              | host        |
++------------------------------------------------------+-------------+
+| dapr-subscription#notifications.subscription         | name, topic |
++------------------------------------------------------+-------------+
+```
+
+</details>
