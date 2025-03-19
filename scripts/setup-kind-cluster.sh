@@ -44,4 +44,5 @@ helm upgrade \
     dapr/dapr \
     --install \
     --create-namespace \
-    -n dapr-system
+    -n dapr-system \
+    --set dapr_scheduler.cluster.inMemoryStorage=true

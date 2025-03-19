@@ -29,9 +29,20 @@ make deploy-local
 
 Test `inventory`:
 ```bash
-curl -X POST $(score-compose resources get-outputs dns.default#inventory.dns --format '{{ .host }}:8080/inventory/restock')
+INVENTORY_DNS=$(score-compose resources get-outputs dns.default#inventory.dns --format '{{ .host }}:8080')
 
-curl $(score-compose resources get-outputs dns.default#inventory.dns --format '{{ .host }}:8080/inventory')
+curl -X POST ${INVENTORY_DNS}/inventory/restock
+
+curl ${INVENTORY_DNS}/inventory
+```
+
+Test `order`:
+```bash
+ORDER_DNS=$(score-compose resources get-outputs dns.default#order-processor.dns --format '{{ .host }}:8080')
+
+curl -X POST ${ORDER_DNS}/orders -H "Content-Type: application/json" -d '{"id": "test", "customer": "bob", "items": ["oranges"], "total": 12.00}'
+
+curl ${ORDER_DNS}/orders/FIXME
 ```
 
 <details><summary>Details</summary>
@@ -107,9 +118,22 @@ Test `inventory`:
 ```bash
 cd development
 
-curl -X POST $(score-k8s resources get-outputs dns.default#inventory.dns --format '{{ .host }}:80/inventory/restock')
+INVENTORY_DNS=$(score-k8s resources get-outputs dns.default#inventory.dns --format '{{ .host }}:80')
 
-curl $(score-k8s resources get-outputs dns.default#inventory.dns --format '{{ .host }}:80/inventory')
+curl -X POST ${INVENTORY_DNS}/inventory/restock
+
+curl ${INVENTORY_DNS}/inventory
+```
+
+Test `order`:
+```bash
+cd development
+
+ORDER_DNS=$(score-k8s resources get-outputs dns.default#order-processor.dns --format '{{ .host }}:80')
+
+curl -X POST ${ORDER_DNS}/orders -H "Content-Type: application/json" -d '{"id": "test", "customer": "bob", "items": ["oranges"], "total": 12.00}'
+
+curl ${ORDER_DNS}/orders/FIXME
 ```
 
 <details><summary>Details</summary>
@@ -212,9 +236,11 @@ Test `inventory`:
 ```bash
 cd staging
 
-curl -X POST $(score-k8s resources get-outputs dns.default#inventory.dns --format '{{ .host }}:80/inventory/restock')
+INVENTORY_DNS=$(score-k8s resources get-outputs dns.default#inventory.dns --format '{{ .host }}:80')
 
-curl $(score-k8s resources get-outputs dns.default#inventory.dns --format '{{ .host }}:80/inventory')
+curl -X POST ${INVENTORY_DNS}/inventory/restock
+
+curl ${INVENTORY_DNS}/inventory
 ```
 
 <details><summary>Details</summary>
