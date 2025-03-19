@@ -293,7 +293,7 @@ def main():
     wf_runtime.start()  # non-blocking
 
     # Start the Flask app server
-    app.run(port=APP_PORT, debug=False, use_reloader=False)
+    app.run(host='0.0.0.0', port=APP_PORT, debug=False, use_reloader=False)
 
     # Stop the workflow runtime to allow the process to terminate
     wf_runtime.shutdown()

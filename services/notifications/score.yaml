@@ -1,0 +1,35 @@
+apiVersion: score.dev/v1b1
+metadata:
+  name: notifications
+  annotations:
+    dapr.io/enabled: "true"
+    dapr.io/app-id: "notifications"
+    dapr.io/app-port: "3001"
+containers:
+  notifications:
+    image: .
+    variables:
+      APP_PORT: "3001"
+      TOPIC_NAME: "${resources.subscription.topic}"
+service:
+  ports:
+    http:
+      port: 3001
+      targetPort: 3001
+resources:
+  dns:
+    type: dns
+  route:
+    type: route
+    params:
+      host: ${resources.dns.host}
+      path: /
+      port: 3001
+  pubsub:
+    type: dapr-pubsub
+    id: pubsub
+  subscription:
+    type: dapr-subscription
+    params:
+      topic: "notifications"
+      pubsub: "${resources.pubsub.name}"

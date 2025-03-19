@@ -1,0 +1,32 @@
+apiVersion: score.dev/v1b1
+metadata:
+  name: order-processor
+  annotations:
+    dapr.io/enabled: "true"
+    dapr.io/app-id: "order-processor"
+    dapr.io/app-port: "3000"
+    dapr.io/sidecar-listen-addresses: "0.0.0.0"
+containers:
+  order-processor:
+    image: .
+    variables:
+      APP_PORT: "3000"
+      PUBSUB_NAME: "${resources.pubsub.name}"
+      TOPIC_NAME: "notifications"
+service:
+  ports:
+    http:
+      port: 3000
+      targetPort: 3000
+resources:
+  pubsub:
+    type: dapr-pubsub
+    id: pubsub
+  dns:
+    type: dns
+  route:
+    type: route
+    params:
+      host: ${resources.dns.host}
+      path: /
+      port: 3000

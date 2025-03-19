@@ -1,0 +1,29 @@
+apiVersion: score.dev/v1b1
+metadata:
+  name: inventory
+  annotations:
+    dapr.io/enabled: "true"
+    dapr.io/app-id: "inventory"
+    dapr.io/app-port: "3002"
+containers:
+  inventory:
+    image: .
+    variables:
+      APP_PORT: "3002"
+      STATESTORE_NAME: "${resources.inventory-state.name}"
+service:
+  ports:
+    http:
+      port: 3002
+      targetPort: 3002
+resources:
+  inventory-state:
+    type: dapr-state-store
+  dns:
+    type: dns
+  route:
+    type: route
+    params:
+      host: ${resources.dns.host}
+      path: /
+      port: 3002

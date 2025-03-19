@@ -4,11 +4,9 @@ import time
 import json
 import random
 import uuid
-import grpc
 
-from dapr.clients import DaprClient
 from flask import Flask, request
-from models import AppFeeMoney, AmountMoney, CreatePayment, Order, PaymentResult
+from models import AmountMoney, CreatePayment, Order
 
 APP_PORT = os.getenv("APP_PORT", "3003")
 
@@ -26,14 +24,6 @@ def charge():
     # Randomly choosing a test card, one which fails and one which succeeds
     sourceIds = list({"cnon:card-nonce-ok", "4000000000000002"})
 
-    # try:
-    # Define the custom content type
-    metadata = {
-        'Content-Type': 'application/json',
-        'Square-Version': '2025-02-20',
-        'path': '/v2/payments'
-    }
-
     # Define the amount money object
     cost = AmountMoney(amount=order.total, currency="USD")
 
@@ -48,40 +38,14 @@ def charge():
         autocomplete=True,
         customer_id=order.customer,
         reference_id=(order.customer + str(idempotency_key)),
-        note="Payment attempt",
-        # app_fee_money=app_fee_money  # Optional; you can skip this if not needed
+        note="Payment attempt"
     )
 
-    payment_data = payment_instance.dict()
+    logging.info(f"Charging payment for order: {order} with payment: {payment_instance}")
 
-    logging.info(f"Charging payment for order: {order}")
+    payment_result = {"success": True, "message": "Payment was accepted"}
 
-    # Initialize the Dapr client
-    with DaprClient() as d:
-        try:
-            # Invoke the binding with the custom content type and payload
-            response = d.invoke_binding(
-                binding_name='square-api',
-                operation='create',
-                data=json.dumps(payment_data).encode('utf-8'),
-                binding_metadata=metadata
-            )
-            
-            logging.info(response.data)
-
-            payment_result = {"success": True, "message": "Payment was accepted"}
-
-            return payment_result, 200
-            
-        except grpc.RpcError as err:
-            logging.info(f"{err.details()}")
-
-            if '400' in err.details():
-                payment_result = {"success": False, "message": f"{err.details()}"}
-                logging.info("Payment was declined by Square API")
-                return payment_result, 200
-            else:
-                return '', 500
+    return payment_result, 200
                 
     
 
@@ -104,7 +68,7 @@ def hello():
 
 def main():
     # Start the Flask app server
-    app.run(port=APP_PORT, debug=True, use_reloader=False)
+    app.run(host='0.0.0.0', port=APP_PORT, debug=True, use_reloader=False)
 
 
 if __name__ == "__main__":
