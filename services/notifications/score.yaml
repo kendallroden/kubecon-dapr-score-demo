@@ -11,7 +11,20 @@ containers:
     variables:
       APP_PORT: "3001"
       TOPIC_NAME: "${resources.subscription.topic}"
+service:
+  ports:
+    http:
+      port: 3001
+      targetPort: 3001
 resources:
+  dns:
+    type: dns
+  route:
+    type: route
+    params:
+      host: ${resources.dns.host}
+      path: /
+      port: 3001
   pubsub:
     type: dapr-pubsub
     id: pubsub
