@@ -44,5 +44,6 @@ helm upgrade \
     dapr/dapr \
     --install \
     --create-namespace \
-    -n dapr-system \
-    --set dapr_scheduler.cluster.inMemoryStorage=true
+    -n dapr-system
+    # Disabling because current issue with this https://github.com/dapr/dapr/blob/master/charts/dapr/charts/dapr_scheduler/templates/_helpers.tpl#L33C34-L33C51
+    #--set dapr_scheduler.cluster.inMemoryStorage=true
