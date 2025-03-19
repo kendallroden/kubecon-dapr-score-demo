@@ -7,6 +7,8 @@ flowchart TD
     order-processor-->state-store
     order-processor-->pubsub
     order-processor-->inventory
+    order-processor-->payments
+    order-processor-->shipping
 ```
 
 TOC:
@@ -25,12 +27,23 @@ flowchart TD
         order-processor-->state-store
         order-processor-->pubsub-->redis-pubsub[(Redis)]
         order-processor-->inventory
+        order-processor-->payments
+        order-processor-->shipping
     end
 ```
 
 Deploy the Score files via `score-compose` and Docker Compose:
 ```bash
 make deploy-local
+```
+
+Test `notifications`:
+```bash
+NOTIFICATIONS_DNS=$(score-compose resources get-outputs dns.default#notifications.dns --format '{{ .host }}:8080')
+
+curl -X POST ${NOTIFICATIONS_DNS}/inventory/restock
+
+curl ${NOTIFICATIONS_DNS}/inventory
 ```
 
 Test `inventory`:
@@ -89,6 +102,8 @@ score-compose resources list
 +------------------------------------------------------+-------------+
 | dns#inventory.dns                                    | host        |
 +------------------------------------------------------+-------------+
+| dns#notifications.dns                                | host        |
++------------------------------------------------------+-------------+
 | dns#order-processor.dns                              | host        |
 +------------------------------------------------------+-------------+
 | dapr-subscription#notifications.subscription         | name, topic |
@@ -117,6 +132,8 @@ flowchart TD
         order-processor-->state-store
         order-processor-->pubsub-->redis-pubsub[(Redis)]
         order-processor-->inventory
+        order-processor-->payments
+        order-processor-->shipping
     end
 ```
 
@@ -205,6 +222,8 @@ score-k8s resources list
 +------------------------------------------------------+-------------+
 | dns#inventory.dns                                    | host        |
 +------------------------------------------------------+-------------+
+| dns#notifications.dns                                | host        |
++------------------------------------------------------+-------------+
 | dns#order-processor.dns                              | host        |
 +------------------------------------------------------+-------------+
 | dapr-subscription#notifications.subscription         | name, topic |
@@ -233,6 +252,8 @@ flowchart TD
         order-processor-->state-store
         order-processor-->pubsub-->redis-pubsub[(RabbitMQ)]
         order-processor-->inventory
+        order-processor-->payments
+        order-processor-->shipping
     end
 ```
 
@@ -320,6 +341,8 @@ score-k8s resources list
 +------------------------------------------------------+-------------+
 | dns#inventory.dns                                    | host        |
 +------------------------------------------------------+-------------+
+| dns#notifications.dns                                | host        |
++------------------------------------------------------+-------------+
 | dns#order-processor.dns                              | host        |
 +------------------------------------------------------+-------------+
 | dapr-subscription#notifications.subscription         | name, topic |
@@ -348,6 +371,8 @@ flowchart TD
         order-processor-->state-store
         order-processor-->pubsub
         order-processor-->inventory
+        order-processor-->payments
+        order-processor-->shipping
     end
     subgraph Azure
         redis-statestore[(Azure Redis)]
@@ -437,6 +462,8 @@ score-k8s resources list
 | dapr-state-store#inventory.inventory-state           | name        |
 +------------------------------------------------------+-------------+
 | dns#inventory.dns                                    | host        |
++------------------------------------------------------+-------------+
+| dns#notifications.dns                                | host        |
 +------------------------------------------------------+-------------+
 | dns#order-processor.dns                              | host        |
 +------------------------------------------------------+-------------+
