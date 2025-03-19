@@ -138,8 +138,6 @@ curl ${INVENTORY_DNS}/inventory
 
 Test `order`:
 ```bash
-cd development
-
 ORDER_DNS=$(score-k8s resources get-outputs dns.default#order-processor.dns --format '{{ .host }}:80')
 
 curl -X POST ${ORDER_DNS}/orders -H "Content-Type: application/json" -d '{"id": "test", "customer": "bob", "items": ["oranges"], "total": 12.00}'
@@ -256,8 +254,6 @@ curl ${INVENTORY_DNS}/inventory
 
 Test `order`:
 ```bash
-cd staging
-
 ORDER_DNS=$(score-k8s resources get-outputs dns.default#order-processor.dns --format '{{ .host }}:80')
 
 curl -X POST ${ORDER_DNS}/orders -H "Content-Type: application/json" -d '{"id": "test", "customer": "bob", "items": ["oranges"], "total": 12.00}'
@@ -378,8 +374,6 @@ curl ${INVENTORY_DNS}/inventory
 
 Test `order`:
 ```bash
-cd production
-
 ORDER_DNS=$(score-k8s resources get-outputs dns.default#order-processor.dns --format '{{ .host }}:80')
 
 curl -X POST ${ORDER_DNS}/orders -H "Content-Type: application/json" -d '{"id": "test", "customer": "bob", "items": ["oranges"], "total": 12.00}'
