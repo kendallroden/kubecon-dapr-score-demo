@@ -9,6 +9,12 @@ flowchart TD
     order-processor-->inventory
 ```
 
+TOC:
+- [Deploy locally with `score-compose`](#deploy-locally-with-score-compose)
+- [Deploy in Development with `score-k8s`](#deploy-in-development-with-score-k8s)
+- [Deploy in Staging with `score-k8s`](#deploy-in-staging-with-score-k8s)
+- [Deploy in Production with `score-k8s`](#deploy-in-production-with-score-k8s)
+
 ## Deploy locally with `score-compose`
 
 ```mermaid
