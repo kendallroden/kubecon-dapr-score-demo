@@ -37,15 +37,6 @@ Deploy the Score files via `score-compose` and Docker Compose:
 make deploy-local
 ```
 
-Test `notifications`:
-```bash
-NOTIFICATIONS_DNS=$(score-compose resources get-outputs dns.default#notifications.dns --format '{{ .host }}:8080')
-
-curl -X POST ${NOTIFICATIONS_DNS}/inventory/restock
-
-curl ${NOTIFICATIONS_DNS}/inventory
-```
-
 Test `inventory`:
 ```bash
 INVENTORY_DNS=$(score-compose resources get-outputs dns.default#inventory.dns --format '{{ .host }}:8080')
