@@ -52,3 +52,8 @@
       required: true
 {{ end }}
 {{ end }}
+- op: set
+  path: services.notifications-notifications.ports
+  value:
+  - target: 3001
+    published: "3001"
