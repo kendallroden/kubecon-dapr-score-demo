@@ -153,6 +153,10 @@ curl -X POST ${ORDER_DNS}/orders -H "Content-Type: application/json" -d '{"id": 
 curl ${ORDER_DNS}/orders/FIXME
 ```
 
+```bash
+kubectl port-forward svc/notifications 8081:3001 -n development
+```
+
 <details><summary>Details</summary>
 
 ```bash
@@ -169,16 +173,18 @@ pod/redis-inventory-1c8b79ab-0         1/1     Running   1 (39m ago)   10h
 pod/redis-notifications-fbae7e51-0     1/1     Running   1 (39m ago)   10h
 pod/shipping-8cbf999fd-hxcj7           2/2     Running   4 (38m ago)   10h
 
-NAME                                   TYPE        CLUSTER-IP      EXTERNAL-IP   PORT(S)                               AGE
-service/inventory                      ClusterIP   10.96.182.178   <none>        3002/TCP                              10h
-service/inventory-dapr                 ClusterIP   None            <none>        80/TCP,50001/TCP,50002/TCP,9090/TCP   10h
-service/kubernetes                     ClusterIP   10.96.0.1       <none>        443/TCP                               30h
-service/notifications-dapr             ClusterIP   None            <none>        80/TCP,50001/TCP,50002/TCP,9090/TCP   10h
-service/order-processor-dapr           ClusterIP   None            <none>        80/TCP,50001/TCP,50002/TCP,9090/TCP   10h
-service/payments-dapr                  ClusterIP   None            <none>        80/TCP,50001/TCP,50002/TCP,9090/TCP   10h
-service/redis-inventory-1c8b79ab       ClusterIP   10.96.216.157   <none>        6379/TCP                              10h
-service/redis-notifications-fbae7e51   ClusterIP   10.96.193.202   <none>        6379/TCP                              10h
-service/shipping-dapr                  ClusterIP   None            <none>        80/TCP,50001/TCP,50002/TCP,9090/TCP   10h
+NAME                           TYPE        CLUSTER-IP      EXTERNAL-IP   PORT(S)                               AGE
+inventory                      ClusterIP   10.96.214.89    <none>        3002/TCP                              18m
+inventory-dapr                 ClusterIP   None            <none>        80/TCP,50001/TCP,50002/TCP,9090/TCP   18m
+notifications                  ClusterIP   10.96.215.105   <none>        3001/TCP                              21m
+notifications-dapr             ClusterIP   None            <none>        80/TCP,50001/TCP,50002/TCP,9090/TCP   21m
+order-processor                ClusterIP   10.96.62.135    <none>        3000/TCP                              21m
+order-processor-dapr           ClusterIP   None            <none>        80/TCP,50001/TCP,50002/TCP,9090/TCP   21m
+payments-dapr                  ClusterIP   None            <none>        80/TCP,50001/TCP,50002/TCP,9090/TCP   21m
+redis-inventory-184c1761       ClusterIP   10.96.172.252   <none>        6379/TCP                              21m
+redis-inventory-7e0c95bd       ClusterIP   10.96.100.248   <none>        6379/TCP                              18m
+redis-notifications-1807dd7b   ClusterIP   10.96.250.63    <none>        6379/TCP                              21m
+shipping-dapr                  ClusterIP   None            <none>        80/TCP,50001/TCP,50002/TCP,9090/TCP   21m
 
 NAME                              READY   UP-TO-DATE   AVAILABLE   AGE
 deployment.apps/inventory         1/1     1            1           10h
@@ -273,6 +279,10 @@ curl -X POST ${ORDER_DNS}/orders -H "Content-Type: application/json" -d '{"id": 
 curl ${ORDER_DNS}/orders/FIXME
 ```
 
+```bash
+kubectl port-forward svc/notifications 8081:3001 -n staging
+```
+
 <details><summary>Details</summary>
 
 ```bash
@@ -289,15 +299,18 @@ pod/rabbitmq-notifications-1c707141-0   1/1     Running   0             37m
 pod/redis-inventory-bc3d32c1-0          1/1     Running   0             37m
 pod/shipping-6c949f5b4-zfpql            2/2     Running   3 (37m ago)   37m
 
-NAME                                      TYPE        CLUSTER-IP      EXTERNAL-IP   PORT(S)                               AGE
-service/inventory                         ClusterIP   10.96.107.53    <none>        3002/TCP                              37m
-service/inventory-dapr                    ClusterIP   None            <none>        80/TCP,50001/TCP,50002/TCP,9090/TCP   37m
-service/notifications-dapr                ClusterIP   None            <none>        80/TCP,50001/TCP,50002/TCP,9090/TCP   37m
-service/order-processor-dapr              ClusterIP   None            <none>        80/TCP,50001/TCP,50002/TCP,9090/TCP   37m
-service/payments-dapr                     ClusterIP   None            <none>        80/TCP,50001/TCP,50002/TCP,9090/TCP   37m
-service/rabbitmq-notifications-1c707141   ClusterIP   10.96.220.253   <none>        5672/TCP,15672/TCP                    37m
-service/redis-inventory-bc3d32c1          ClusterIP   10.96.254.139   <none>        6379/TCP                              37m
-service/shipping-dapr                     ClusterIP   None            <none>        80/TCP,50001/TCP,50002/TCP,9090/TCP   37m
+NAME                           TYPE        CLUSTER-IP      EXTERNAL-IP   PORT(S)                               AGE
+inventory                      ClusterIP   10.96.214.89    <none>        3002/TCP                              18m
+inventory-dapr                 ClusterIP   None            <none>        80/TCP,50001/TCP,50002/TCP,9090/TCP   18m
+notifications                  ClusterIP   10.96.215.105   <none>        3001/TCP                              21m
+notifications-dapr             ClusterIP   None            <none>        80/TCP,50001/TCP,50002/TCP,9090/TCP   21m
+order-processor                ClusterIP   10.96.62.135    <none>        3000/TCP                              21m
+order-processor-dapr           ClusterIP   None            <none>        80/TCP,50001/TCP,50002/TCP,9090/TCP   21m
+payments-dapr                  ClusterIP   None            <none>        80/TCP,50001/TCP,50002/TCP,9090/TCP   21m
+redis-inventory-184c1761       ClusterIP   10.96.172.252   <none>        6379/TCP                              21m
+redis-inventory-7e0c95bd       ClusterIP   10.96.100.248   <none>        6379/TCP                              18m
+redis-notifications-1807dd7b   ClusterIP   10.96.250.63    <none>        6379/TCP                              21m
+shipping-dapr                  ClusterIP   None            <none>        80/TCP,50001/TCP,50002/TCP,9090/TCP   21m
 
 NAME                              READY   UP-TO-DATE   AVAILABLE   AGE
 deployment.apps/inventory         1/1     1            1           37m
@@ -397,6 +410,10 @@ curl -X POST ${ORDER_DNS}/orders -H "Content-Type: application/json" -d '{"id": 
 curl ${ORDER_DNS}/orders/FIXME
 ```
 
+```bash
+kubectl port-forward svc/notifications 8081:3001 -n production
+```
+
 <details><summary>Details</summary>
 
 ```bash
@@ -412,15 +429,18 @@ pod/payments-5597b56cbc-dmjsc          2/2     Running   1 (10m ago)   10m
 pod/redis-notifications-8c65e063-0     1/1     Running   0             10m
 pod/shipping-857fb55c79-hgp64          2/2     Running   0             10m
 
-NAME                                   TYPE        CLUSTER-IP      EXTERNAL-IP   PORT(S)                               AGE
-service/inventory                      ClusterIP   10.96.96.56     <none>        3002/TCP                              10m
-service/inventory-dapr                 ClusterIP   None            <none>        80/TCP,50001/TCP,50002/TCP,9090/TCP   10m
-service/notifications-dapr             ClusterIP   None            <none>        80/TCP,50001/TCP,50002/TCP,9090/TCP   10m
-service/order-processor                ClusterIP   10.96.38.202    <none>        3000/TCP                              10m
-service/order-processor-dapr           ClusterIP   None            <none>        80/TCP,50001/TCP,50002/TCP,9090/TCP   10m
-service/payments-dapr                  ClusterIP   None            <none>        80/TCP,50001/TCP,50002/TCP,9090/TCP   10m
-service/redis-notifications-8c65e063   ClusterIP   10.96.153.121   <none>        6379/TCP                              10m
-service/shipping-dapr                  ClusterIP   None            <none>        80/TCP,50001/TCP,50002/TCP,9090/TCP   10m
+NAME                           TYPE        CLUSTER-IP      EXTERNAL-IP   PORT(S)                               AGE
+inventory                      ClusterIP   10.96.214.89    <none>        3002/TCP                              18m
+inventory-dapr                 ClusterIP   None            <none>        80/TCP,50001/TCP,50002/TCP,9090/TCP   18m
+notifications                  ClusterIP   10.96.215.105   <none>        3001/TCP                              21m
+notifications-dapr             ClusterIP   None            <none>        80/TCP,50001/TCP,50002/TCP,9090/TCP   21m
+order-processor                ClusterIP   10.96.62.135    <none>        3000/TCP                              21m
+order-processor-dapr           ClusterIP   None            <none>        80/TCP,50001/TCP,50002/TCP,9090/TCP   21m
+payments-dapr                  ClusterIP   None            <none>        80/TCP,50001/TCP,50002/TCP,9090/TCP   21m
+redis-inventory-184c1761       ClusterIP   10.96.172.252   <none>        6379/TCP                              21m
+redis-inventory-7e0c95bd       ClusterIP   10.96.100.248   <none>        6379/TCP                              18m
+redis-notifications-1807dd7b   ClusterIP   10.96.250.63    <none>        6379/TCP                              21m
+shipping-dapr                  ClusterIP   None            <none>        80/TCP,50001/TCP,50002/TCP,9090/TCP   21m
 
 NAME                              READY   UP-TO-DATE   AVAILABLE   AGE
 deployment.apps/inventory         1/1     1            1           10m
