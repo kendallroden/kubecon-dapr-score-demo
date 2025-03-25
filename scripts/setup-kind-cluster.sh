@@ -13,7 +13,7 @@ nodes:
 EOF
 
 kubectl apply \
-    -f https://github.com/kubernetes-sigs/gateway-api/releases/download/v1.1.0/standard-install.yaml
+    -f https://github.com/kubernetes-sigs/gateway-api/releases/download/v1.2.1/standard-install.yaml
 
 helm install ngf oci://ghcr.io/nginxinc/charts/nginx-gateway-fabric \
     --create-namespace \
