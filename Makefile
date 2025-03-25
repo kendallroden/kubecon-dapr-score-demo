@@ -33,6 +33,7 @@ compose.yaml: services/inventory/score.yaml services/notifications/score.yaml se
 ## Generate a compose.yaml file from the score spec and launch it.
 .PHONY: deploy-local
 deploy-local: compose.yaml
+	mkdir dapr-etcd-data -p
 	docker compose up --build -d --remove-orphans
 	sleep 5
 
