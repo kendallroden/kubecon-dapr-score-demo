@@ -14,7 +14,7 @@
   value: ghcr.io/dapr/scheduler:latest
 - op: set
   path: services.scheduler.command
-  value: ["./scheduler", "--port", "50007"]
+  value: ["./scheduler", "--port", "50007", "--etcd-data-dir=/data"]
 - op: set
   path: services.scheduler.ports
   value:
@@ -27,6 +27,9 @@
     target: /data
     tmpfs:
       size: 128
+- op: set
+  path: services.scheduler.user
+  value: root
 {{ range $name, $cfg := .Compose.services }}
 {{ if dig "annotations" "dapr.io/enabled" false $cfg }}
 - op: set
