@@ -235,3 +235,4 @@ pyrightconfig.json
 **/.score-compose/*
 **/.score-k8s/*
 **/manifests.yaml
+dapr-etcd-data/
