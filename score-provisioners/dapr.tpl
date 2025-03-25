@@ -14,7 +14,7 @@
   value: ghcr.io/dapr/scheduler:latest
 - op: set
   path: services.scheduler.command
-  value: ["./scheduler", "--port", "50007", "--etcd-data-dir=/data"]
+  value: ["./scheduler", "--port", "50007", "--etcd-data-dir", "/data"]
 - op: set
   path: services.scheduler.ports
   value:
@@ -23,10 +23,9 @@
 - op: set
   path: services.scheduler.volumes
   value:
-  - type: tmpfs
+  - type: bind
+    source: ./dapr-etcd-data/
     target: /data
-    tmpfs:
-      size: 128
 - op: set
   path: services.scheduler.user
   value: root
