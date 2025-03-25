@@ -50,7 +50,7 @@ Test `order`:
 ```bash
 ORDER_DNS=$(score-compose resources get-outputs dns.default#order-processor.dns --format '{{ .host }}:8080')
 
-curl -X POST ${ORDER_DNS}/orders -H "Content-Type: application/json" -d '{"id": "test", "customer": "bob", "items": ["oranges"], "total": 12.00}'
+curl -X POST ${ORDER_DNS}/orders -H "Content-Type: application/json" -d '{"id": "test", "customer": "bob", "items": ["orange"], "total": 12.00}'
 
 curl ${ORDER_DNS}/orders/FIXME
 ```

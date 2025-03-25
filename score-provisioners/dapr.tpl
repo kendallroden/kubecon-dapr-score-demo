@@ -36,7 +36,7 @@
   value: ghcr.io/dapr/daprd:latest
 - op: set
   path: services.{{ $name }}-sidecar.command
-  value: ["./daprd", "--app-id={{ dig "annotations" "dapr.io/app-id" "" $cfg }}", "--app-port={{ dig "annotations" "dapr.io/app-port" "" $cfg }}", "--enable-api-logging={{ dig "annotations" "dapr.io/enable-api-logging" false $cfg }}", "--placement-host-address=placement:50006", "--resources-path=/components"]
+  value: ["./daprd", "--app-id={{ dig "annotations" "dapr.io/app-id" "" $cfg }}", "--app-port={{ dig "annotations" "dapr.io/app-port" "" $cfg }}", "--enable-api-logging={{ dig "annotations" "dapr.io/enable-api-logging" false $cfg }}", "--placement-host-address=placement:50006", "--scheduler-host-address=scheduler:50007", "--resources-path=/components"]
 - op: set
   path: services.{{ $name }}-sidecar.network_mode
   value: service:{{ $name }}
