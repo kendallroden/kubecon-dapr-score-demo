@@ -8,7 +8,7 @@ APP_PORT = os.getenv("APP_PORT", "3001")
 TOPIC_NAME = os.getenv("TOPIC_NAME", "notifications")
 
 app = Flask(__name__)
-socketio = SocketIO(app)
+socketio = SocketIO(app, cors_allowed_origins="*")
 
 
 @socketio.on('connect')
