@@ -91,7 +91,7 @@ staging/.score-k8s/state.yaml:
 		--provisioners https://raw.githubusercontent.com/score-spec/community-provisioners/refs/heads/main/score-k8s/10-rabbitmq-dapr-pubsub.provisioners.yaml \
 		--provisioners https://raw.githubusercontent.com/score-spec/community-provisioners/refs/heads/main/score-k8s/10-dapr-subscription.provisioners.yaml \
 		--provisioners https://raw.githubusercontent.com/score-spec/community-provisioners/refs/heads/main/score-k8s/10-shared-gateway-httproute.provisioners.yaml \
-		--provisioners ../score-provisioners/00-redis-dapr-state-store-with-actor-k8s.provisioners.yaml
+		--provisioners ../score-provisioners/00-postgres-dapr-state-store-with-actor-k8s.provisioners.yaml
 
 staging/manifests.yaml: services/inventory/score.yaml services/notifications/score.yaml services/order-processor/score.yaml services/payments/score.yaml services/shipping/score.yaml staging/.score-k8s/state.yaml Makefile
 	cd staging && score-k8s generate ../services/inventory/score.yaml --image inventory:local

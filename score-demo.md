@@ -46,6 +46,13 @@ curl -X POST ${INVENTORY_DNS}/inventory/restock
 curl ${INVENTORY_DNS}/inventory
 ```
 
+Test `notifications`:
+```bash
+NOTIFICATIONS_DNS=$(score-compose resources get-outputs dns.default#notifications.dns --format '{{ .host }}:8080')
+
+curl ${NOTIFICATIONS_DNS}
+```
+
 Test `order`:
 ```bash
 ORDER_DNS=$(score-compose resources get-outputs dns.default#order-processor.dns --format '{{ .host }}:8080')
@@ -244,7 +251,7 @@ make kind-load-image
 ```mermaid
 flowchart TD
     subgraph Kubernetes - staging
-        inventory-->state-store([StateStore])-->redis-statestore[(Redis)]
+        inventory-->state-store([StateStore])-->postgres-statestore[(PostgreSQL)]
         notifications-->subscription([Subscription])-->pubsub([PubSub])
         order-processor-->state-store
         order-processor-->pubsub-->redis-pubsub[(RabbitMQ)]
@@ -290,45 +297,44 @@ kubectl get all -n staging
 ```
 
 ```none
-NAME                                    READY   STATUS    RESTARTS      AGE
-pod/inventory-5696b67fd5-fgdf6          2/2     Running   3 (37m ago)   37m
-pod/notifications-c95954c6-knp2d        2/2     Running   3 (37m ago)   37m
-pod/order-processor-8d5974f96-6xdb4     2/2     Running   3 (37m ago)   37m
-pod/payments-655678dbd6-5g5hr           2/2     Running   3 (37m ago)   37m
-pod/rabbitmq-notifications-1c707141-0   1/1     Running   0             37m
-pod/redis-inventory-bc3d32c1-0          1/1     Running   0             37m
-pod/shipping-6c949f5b4-zfpql            2/2     Running   3 (37m ago)   37m
+NAME                                    READY   STATUS    RESTARTS        AGE
+pod/inventory-7d7bfd7859-5xk88          2/2     Running   3 (4m42s ago)   5m10s
+pod/notifications-bffc9b98b-4whsf       2/2     Running   3 (4m45s ago)   5m9s
+pod/order-processor-7585f97f49-tl6ch    2/2     Running   3 (4m42s ago)   5m9s
+pod/payments-554d98b4d9-5hz96           2/2     Running   3 (4m42s ago)   5m9s
+pod/pg-inventory-83607e1d-0             1/1     Running   0               5m10s
+pod/rabbitmq-notifications-6bd2d88e-0   1/1     Running   0               5m10s
+pod/shipping-7c4f956bdf-pszr5           2/2     Running   3 (4m42s ago)   5m9s
 
-NAME                           TYPE        CLUSTER-IP      EXTERNAL-IP   PORT(S)                               AGE
-inventory                      ClusterIP   10.96.214.89    <none>        3002/TCP                              18m
-inventory-dapr                 ClusterIP   None            <none>        80/TCP,50001/TCP,50002/TCP,9090/TCP   18m
-notifications                  ClusterIP   10.96.215.105   <none>        3001/TCP                              21m
-notifications-dapr             ClusterIP   None            <none>        80/TCP,50001/TCP,50002/TCP,9090/TCP   21m
-order-processor                ClusterIP   10.96.62.135    <none>        3000/TCP                              21m
-order-processor-dapr           ClusterIP   None            <none>        80/TCP,50001/TCP,50002/TCP,9090/TCP   21m
-payments-dapr                  ClusterIP   None            <none>        80/TCP,50001/TCP,50002/TCP,9090/TCP   21m
-redis-inventory-184c1761       ClusterIP   10.96.172.252   <none>        6379/TCP                              21m
-redis-inventory-7e0c95bd       ClusterIP   10.96.100.248   <none>        6379/TCP                              18m
-redis-notifications-1807dd7b   ClusterIP   10.96.250.63    <none>        6379/TCP                              21m
-shipping-dapr                  ClusterIP   None            <none>        80/TCP,50001/TCP,50002/TCP,9090/TCP   21m
+NAME                                      TYPE        CLUSTER-IP      EXTERNAL-IP   PORT(S)                               AGE
+service/inventory                         ClusterIP   10.96.182.146   <none>        3002/TCP                              5m10s
+service/inventory-dapr                    ClusterIP   None            <none>        80/TCP,50001/TCP,50002/TCP,9090/TCP   5m10s
+service/notifications                     ClusterIP   10.96.185.83    <none>        3001/TCP                              5m10s
+service/notifications-dapr                ClusterIP   None            <none>        80/TCP,50001/TCP,50002/TCP,9090/TCP   5m10s
+service/order-processor                   ClusterIP   10.96.144.49    <none>        3000/TCP                              5m10s
+service/order-processor-dapr              ClusterIP   None            <none>        80/TCP,50001/TCP,50002/TCP,9090/TCP   5m10s
+service/payments-dapr                     ClusterIP   None            <none>        80/TCP,50001/TCP,50002/TCP,9090/TCP   5m9s
+service/pg-inventory-83607e1d             ClusterIP   10.96.137.104   <none>        5432/TCP                              5m10s
+service/rabbitmq-notifications-6bd2d88e   ClusterIP   10.96.103.227   <none>        5672/TCP,15672/TCP                    5m10s
+service/shipping-dapr                     ClusterIP   None            <none>        80/TCP,50001/TCP,50002/TCP,9090/TCP   5m9s
 
 NAME                              READY   UP-TO-DATE   AVAILABLE   AGE
-deployment.apps/inventory         1/1     1            1           37m
-deployment.apps/notifications     1/1     1            1           37m
-deployment.apps/order-processor   1/1     1            1           37m
-deployment.apps/payments          1/1     1            1           37m
-deployment.apps/shipping          1/1     1            1           37m
+deployment.apps/inventory         1/1     1            1           5m10s
+deployment.apps/notifications     1/1     1            1           5m10s
+deployment.apps/order-processor   1/1     1            1           5m10s
+deployment.apps/payments          1/1     1            1           5m9s
+deployment.apps/shipping          1/1     1            1           5m9s
 
-NAME                                        DESIRED   CURRENT   READY   AGE
-replicaset.apps/inventory-5696b67fd5        1         1         1       37m
-replicaset.apps/notifications-c95954c6      1         1         1       37m
-replicaset.apps/order-processor-8d5974f96   1         1         1       37m
-replicaset.apps/payments-655678dbd6         1         1         1       37m
-replicaset.apps/shipping-6c949f5b4          1         1         1       37m
+NAME                                         DESIRED   CURRENT   READY   AGE
+replicaset.apps/inventory-7d7bfd7859         1         1         1       5m10s
+replicaset.apps/notifications-bffc9b98b      1         1         1       5m10s
+replicaset.apps/order-processor-7585f97f49   1         1         1       5m10s
+replicaset.apps/payments-554d98b4d9          1         1         1       5m9s
+replicaset.apps/shipping-7c4f956bdf          1         1         1       5m9s
 
 NAME                                               READY   AGE
-statefulset.apps/rabbitmq-notifications-1c707141   1/1     37m
-statefulset.apps/redis-inventory-bc3d32c1          1/1     37m
+statefulset.apps/pg-inventory-83607e1d             1/1     5m10s
+statefulset.apps/rabbitmq-notifications-6bd2d88e   1/1     5m10s
 ```
 
 ```bash
