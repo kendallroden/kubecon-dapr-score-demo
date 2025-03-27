@@ -39,27 +39,27 @@ make deploy-local
 
 Test `inventory`:
 ```bash
-INVENTORY_DNS=$(score-compose resources get-outputs dns.default#inventory.dns --format '{{ .host }}:8080')
+INVENTORY_DNS=$(score-compose resources get-outputs dns.default#inventory.dns --format '{{ .host }}')
 
-curl -X POST ${INVENTORY_DNS}/inventory/restock
+curl -X POST localhost:8080/inventory/restock -H "Host: ${INVENTORY_DNS}"
 
-curl ${INVENTORY_DNS}/inventory
+curl localhost:8080/inventory -H "Host: ${INVENTORY_DNS}"
 ```
 
 Test `notifications`:
 ```bash
-NOTIFICATIONS_DNS=$(score-compose resources get-outputs dns.default#notifications.dns --format '{{ .host }}:8080')
+NOTIFICATIONS_DNS=$(score-compose resources get-outputs dns.default#notifications.dns --format '{{ .host }}')
 
-curl ${NOTIFICATIONS_DNS}
+echo -e "http://${NOTIFICATIONS_DNS}:8080"
 ```
 
 Test `order`:
 ```bash
-ORDER_DNS=$(score-compose resources get-outputs dns.default#order-processor.dns --format '{{ .host }}:8080')
+ORDER_DNS=$(score-compose resources get-outputs dns.default#order-processor.dns --format '{{ .host }}')
 
-curl -X POST ${ORDER_DNS}/orders -H "Content-Type: application/json" -d '{"id": "test", "customer": "bob", "items": ["orange"], "total": 12.00}'
+curl -X POST localhost:8080/orders -H "Host: ${ORDER_DNS}" -H "Content-Type: application/json" -d '{"id": "test", "customer": "bob", "items": ["orange"], "total": 12.00}'
 
-curl ${ORDER_DNS}/orders/FIXME
+curl localhost:8080/orders/FIXME -H "Host: ${ORDER_DNS}"
 ```
 
 <details><summary>Details</summary>
@@ -144,24 +144,27 @@ Test `inventory`:
 ```bash
 cd development
 
-INVENTORY_DNS=$(score-k8s resources get-outputs dns.default#inventory.dns --format '{{ .host }}:80')
+INVENTORY_DNS=$(score-k8s resources get-outputs dns.default#inventory.dns --format '{{ .host }}')
 
-curl -X POST ${INVENTORY_DNS}/inventory/restock
+curl -X POST localhost:80/inventory/restock -H "Host: ${INVENTORY_DNS}"
 
-curl ${INVENTORY_DNS}/inventory
+curl localhost:80/inventory -H "Host: ${INVENTORY_DNS}"
+```
+
+Test `notifications`:
+```bash
+NOTIFICATIONS_DNS=$(score-k8s resources get-outputs dns.default#notifications.dns --format '{{ .host }}')
+
+echo -e "http://${NOTIFICATIONS_DNS}:80"
 ```
 
 Test `order`:
 ```bash
-ORDER_DNS=$(score-k8s resources get-outputs dns.default#order-processor.dns --format '{{ .host }}:80')
+ORDER_DNS=$(score-k8s resources get-outputs dns.default#order-processor.dns --format '{{ .host }}')
 
-curl -X POST ${ORDER_DNS}/orders -H "Content-Type: application/json" -d '{"id": "test", "customer": "bob", "items": ["oranges"], "total": 12.00}'
+curl -X POST localhost:80/orders -H "Host: ${ORDER_DNS}" -H "Content-Type: application/json" -d '{"id": "test", "customer": "bob", "items": ["orange"], "total": 12.00}'
 
-curl ${ORDER_DNS}/orders/FIXME
-```
-
-```bash
-kubectl port-forward svc/notifications 8081:3001 -n development
+curl localhost:80/orders/FIXME -H "Host: ${ORDER_DNS}"
 ```
 
 <details><summary>Details</summary>
@@ -270,24 +273,27 @@ Test `inventory`:
 ```bash
 cd staging
 
-INVENTORY_DNS=$(score-k8s resources get-outputs dns.default#inventory.dns --format '{{ .host }}:80')
+INVENTORY_DNS=$(score-k8s resources get-outputs dns.default#inventory.dns --format '{{ .host }}')
 
-curl -X POST ${INVENTORY_DNS}/inventory/restock
+curl -X POST localhost:80/inventory/restock -H "Host: ${INVENTORY_DNS}"
 
-curl ${INVENTORY_DNS}/inventory
+curl localhost:80/inventory -H "Host: ${INVENTORY_DNS}"
+```
+
+Test `notifications`:
+```bash
+NOTIFICATIONS_DNS=$(score-k8s resources get-outputs dns.default#notifications.dns --format '{{ .host }}')
+
+echo -e "http://${NOTIFICATIONS_DNS}:80"
 ```
 
 Test `order`:
 ```bash
-ORDER_DNS=$(score-k8s resources get-outputs dns.default#order-processor.dns --format '{{ .host }}:80')
+ORDER_DNS=$(score-k8s resources get-outputs dns.default#order-processor.dns --format '{{ .host }}')
 
-curl -X POST ${ORDER_DNS}/orders -H "Content-Type: application/json" -d '{"id": "test", "customer": "bob", "items": ["oranges"], "total": 12.00}'
+curl -X POST localhost:80/orders -H "Host: ${ORDER_DNS}" -H "Content-Type: application/json" -d '{"id": "test", "customer": "bob", "items": ["orange"], "total": 12.00}'
 
-curl ${ORDER_DNS}/orders/FIXME
-```
-
-```bash
-kubectl port-forward svc/notifications 8081:3001 -n staging
+curl localhost:80/orders/FIXME -H "Host: ${ORDER_DNS}"
 ```
 
 <details><summary>Details</summary>
@@ -400,24 +406,27 @@ Test `inventory`:
 ```bash
 cd production
 
-INVENTORY_DNS=$(score-k8s resources get-outputs dns.default#inventory.dns --format '{{ .host }}:80')
+INVENTORY_DNS=$(score-k8s resources get-outputs dns.default#inventory.dns --format '{{ .host }}')
 
-curl -X POST ${INVENTORY_DNS}/inventory/restock
+curl -X POST localhost:80/inventory/restock -H "Host: ${INVENTORY_DNS}"
 
-curl ${INVENTORY_DNS}/inventory
+curl localhost:80/inventory -H "Host: ${INVENTORY_DNS}"
+```
+
+Test `notifications`:
+```bash
+NOTIFICATIONS_DNS=$(score-k8s resources get-outputs dns.default#notifications.dns --format '{{ .host }}')
+
+echo -e "http://${NOTIFICATIONS_DNS}:80"
 ```
 
 Test `order`:
 ```bash
-ORDER_DNS=$(score-k8s resources get-outputs dns.default#order-processor.dns --format '{{ .host }}:80')
+ORDER_DNS=$(score-k8s resources get-outputs dns.default#order-processor.dns --format '{{ .host }}')
 
-curl -X POST ${ORDER_DNS}/orders -H "Content-Type: application/json" -d '{"id": "test", "customer": "bob", "items": ["oranges"], "total": 12.00}'
+curl -X POST localhost:80/orders -H "Host: ${ORDER_DNS}" -H "Content-Type: application/json" -d '{"id": "test", "customer": "bob", "items": ["orange"], "total": 12.00}'
 
-curl ${ORDER_DNS}/orders/FIXME
-```
-
-```bash
-kubectl port-forward svc/notifications 8081:3001 -n production
+curl localhost:80/orders/FIXME -H "Host: ${ORDER_DNS}"
 ```
 
 <details><summary>Details</summary>
