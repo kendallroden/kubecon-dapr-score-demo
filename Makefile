@@ -24,11 +24,17 @@ dapr-up:
 		--patch-templates score-provisioners/dapr.tpl
 
 compose.yaml: services/inventory/score.yaml services/notifications/score.yaml services/order-processor/score.yaml services/payments/score.yaml services/shipping/score.yaml .score-compose/state.yaml Makefile
-	score-compose generate services/inventory/score.yaml --build 'inventory={"context":"services/inventory/","tags":["inventory:local"]}'
-	score-compose generate services/notifications/score.yaml --build 'notifications={"context":"services/notifications/","tags":["notifications:local"]}'
-	score-compose generate services/order-processor/score.yaml --build 'order-processor={"context":"services/order-processor/","tags":["order-processor:local"]}'
-	score-compose generate services/payments/score.yaml --build 'payments={"context":"services/payments/","tags":["payments:local"]}'
-	score-compose generate services/shipping/score.yaml --build 'shipping={"context":"services/shipping/","tags":["shipping:local"]}'
+	score-compose generate services/inventory/score.yaml \
+		--build 'inventory={"context":"services/inventory/","tags":["inventory:local"]}'
+	score-compose generate services/notifications/score.yaml \
+		--build 'notifications={"context":"services/notifications/","tags":["notifications:local"]}' \
+		--override-property 'containers.notifications.variables.WITH_SCORE="true"'
+	score-compose generate services/order-processor/score.yaml \
+		--build 'order-processor={"context":"services/order-processor/","tags":["order-processor:local"]}'
+	score-compose generate services/payments/score.yaml \
+		--build 'payments={"context":"services/payments/","tags":["payments:local"]}'
+	score-compose generate services/shipping/score.yaml \
+		--build 'shipping={"context":"services/shipping/","tags":["shipping:local"]}'
 
 ## Generate a compose.yaml file from the score spec and launch it.
 .PHONY: deploy-local
@@ -36,6 +42,11 @@ deploy-local: compose.yaml
 	mkdir dapr-etcd-data -p
 	docker compose up --build -d --remove-orphans
 	sleep 5
+
+# Get notifications UI DNS.
+.PHONY: get-notifications-local
+get-notifications-local:
+	echo -e "http://$$(score-compose resources get-outputs dns.default#notifications.dns --format '{{ .host }}'):8080"
 
 # Generate notifications by creating orders.
 .PHONY: test-local
@@ -80,7 +91,8 @@ development/.score-k8s/state.yaml:
 development/manifests.yaml: services/inventory/score.yaml services/notifications/score.yaml services/order-processor/score.yaml services/payments/score.yaml services/shipping/score.yaml development/.score-k8s/state.yaml Makefile
 	cd development  && \
 	score-k8s generate ../services/inventory/score.yaml --image inventory:local && \
-	score-k8s generate ../services/notifications/score.yaml --image notifications:local && \
+	score-k8s generate ../services/notifications/score.yaml --image notifications:local  \
+		--override-property 'containers.notifications.variables.WITH_SCORE="true"' && \
 	score-k8s generate ../services/order-processor/score.yaml --image order-processor:local && \
 	score-k8s generate ../services/payments/score.yaml --image payments:local && \
 	score-k8s generate ../services/shipping/score.yaml --image shipping:local
@@ -96,7 +108,7 @@ deploy-development: development/manifests.yaml
 .PHONY: get-notifications-development
 get-notifications-development:
 	cd development && \
-	echo -e "http://$$(score-k8s resources get-outputs dns.default#notifications.dns --format '{{ .host }}'):8080"
+	echo -e "http://$$(score-k8s resources get-outputs dns.default#notifications.dns --format '{{ .host }}'):80"
 
 # Generate notifications by creating orders.
 .PHONY: test-development
@@ -130,7 +142,10 @@ staging/.score-k8s/state.yaml:
 staging/manifests.yaml: services/inventory/score.yaml services/notifications/score.yaml services/order-processor/score.yaml services/payments/score.yaml services/shipping/score.yaml staging/.score-k8s/state.yaml Makefile
 	cd staging && \
 	score-k8s generate ../services/inventory/score.yaml --image inventory:local && \
-	score-k8s generate ../services/notifications/score.yaml --image notifications:local && \
+	score-k8s generate ../services/notifications/score.yaml --image notifications:local  \
+		--override-property 'containers.notifications.variables.WITH_SCORE="true"' \
+		--override-property 'containers.notifications.variables.INVENTORY_TYPE="PostgreSQL"' \
+		--override-property 'containers.notifications.variables.NOTIFICATIONS_TYPE="RabbitMQ"' && \
 	score-k8s generate ../services/order-processor/score.yaml --image order-processor:local && \
 	score-k8s generate ../services/payments/score.yaml --image payments:local && \
 	score-k8s generate ../services/shipping/score.yaml --image shipping:local
@@ -146,7 +161,7 @@ deploy-staging: staging/manifests.yaml
 .PHONY: get-notifications-staging
 get-notifications-staging:
 	cd staging && \
-	echo -e "http://$$(score-k8s resources get-outputs dns.default#notifications.dns --format '{{ .host }}'):8080"
+	echo -e "http://$$(score-k8s resources get-outputs dns.default#notifications.dns --format '{{ .host }}'):80"
 
 # Generate notifications by creating orders.
 .PHONY: test-staging
@@ -181,7 +196,8 @@ production/.score-k8s/state.yaml:
 production/manifests.yaml: services/inventory/score.yaml services/notifications/score.yaml services/order-processor/score.yaml services/payments/score.yaml services/shipping/score.yaml production/.score-k8s/state.yaml Makefile
 	cd production && \
 	score-k8s generate ../services/inventory/score.yaml --image inventory:local && \
-	score-k8s generate ../services/notifications/score.yaml --image notifications:local && \
+	score-k8s generate ../services/notifications/score.yaml --image notifications:local  \
+		--override-property 'containers.notifications.variables.WITH_SCORE="true"' && \
 	score-k8s generate ../services/order-processor/score.yaml --image order-processor:local && \
 	score-k8s generate ../services/payments/score.yaml --image payments:local && \
 	score-k8s generate ../services/shipping/score.yaml --image shipping:local && \
@@ -197,7 +213,7 @@ deploy-production: production/manifests.yaml
 .PHONY: get-notifications-production
 get-notifications-production:
 	cd production && \
-	echo -e "http://$$(score-k8s resources get-outputs dns.default#notifications.dns --format '{{ .host }}'):8080"
+	echo -e "http://$$(score-k8s resources get-outputs dns.default#notifications.dns --format '{{ .host }}'):80"
 
 # Generate notifications by creating orders.
 .PHONY: test-production

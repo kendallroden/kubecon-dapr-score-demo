@@ -236,3 +236,4 @@ pyrightconfig.json
 **/.score-k8s/*
 **/manifests.yaml
 dapr-etcd-data/
+.vscode/settings.json

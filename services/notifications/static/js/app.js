@@ -2,7 +2,7 @@ window.onload = function () {
 
     console.log("Protocol: " + location.protocol);
     var wsURL = location.protocol + "//" + document.location.host
-
+    
     var log = document.getElementById("notifications");
 
     function appendLog(item) {
@@ -14,6 +14,9 @@ window.onload = function () {
     }
 
     if (log) {
+        var hostDiv = document.getElementById("host");
+        hostDiv.innerText = document.location.host;
+
         var sock = io.connect(wsURL);
         var connDiv = document.getElementById("connection-status");
         connDiv.innerText = "closed";

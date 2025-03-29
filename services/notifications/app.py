@@ -6,6 +6,9 @@ from flask_socketio import SocketIO
 
 APP_PORT = os.getenv("APP_PORT", "3001")
 TOPIC_NAME = os.getenv("TOPIC_NAME", "notifications")
+WITH_SCORE = os.getenv("WITH_SCORE", "false")
+INVENTORY_TYPE = os.getenv("INVENTORY_TYPE", "Redis")
+NOTIFICATIONS_TYPE = os.getenv("NOTIFICATIONS_TYPE", "Redis")
 
 app = Flask(__name__)
 socketio = SocketIO(app, cors_allowed_origins="*")
@@ -18,7 +21,7 @@ def socket_connect():
 
 @app.route('/')
 def index():
-    return render_template('index.html')
+    return render_template('index.html', with_score=WITH_SCORE, inventory_type=INVENTORY_TYPE, notifications_type=NOTIFICATIONS_TYPE)
 
 
 @app.route('/' + TOPIC_NAME, methods=['POST', 'PUT'])
