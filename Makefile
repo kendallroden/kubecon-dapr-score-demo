@@ -13,7 +13,7 @@ help:
 
 dapr-up:
 	dapr init || true
-	dapr run -f . 
+	dapr run -f .
 
 .score-compose/state.yaml:
 	score-compose init --no-sample \
@@ -36,6 +36,18 @@ deploy-local: compose.yaml
 	mkdir dapr-etcd-data -p
 	docker compose up --build -d --remove-orphans
 	sleep 5
+
+# Generate notifications by creating orders.
+.PHONY: test-local
+test-local:
+	curl localhost:8080/inventory/restock \
+		-X POST \
+		-H "Host: $$(score-compose resources get-outputs dns.default#inventory.dns --format '{{ .host }}')"
+	curl -X POST localhost:8080/orders -H "Host: $$(score-compose resources get-outputs dns.default#order-processor.dns --format '{{ .host }}')" \
+		-H "Content-Type: application/json" -d '{"customer": "bob", "items": ["orange"], "total": 12.00}'
+	sleep 5
+	curl -X POST localhost:8080/orders -H "Host: $$(score-compose resources get-outputs dns.default#order-processor.dns --format '{{ .host }}')" \
+		-H "Content-Type: application/json" -d '{"customer": "kendall", "items": ["kiwi"], "total": 121.00}'
 
 ## Delete the containers running via compose down.
 .PHONY: cleanup-local
@@ -66,11 +78,12 @@ development/.score-k8s/state.yaml:
 		--provisioners ../score-provisioners/00-redis-dapr-state-store-with-actor-k8s.provisioners.yaml
 
 development/manifests.yaml: services/inventory/score.yaml services/notifications/score.yaml services/order-processor/score.yaml services/payments/score.yaml services/shipping/score.yaml development/.score-k8s/state.yaml Makefile
-	cd development && score-k8s generate ../services/inventory/score.yaml --image inventory:local
-	cd development && score-k8s generate ../services/notifications/score.yaml --image notifications:local
-	cd development && score-k8s generate ../services/order-processor/score.yaml --image order-processor:local
-	cd development && score-k8s generate ../services/payments/score.yaml --image payments:local
-	cd development && score-k8s generate ../services/shipping/score.yaml --image shipping:local
+	cd development  && \
+	score-k8s generate ../services/inventory/score.yaml --image inventory:local && \
+	score-k8s generate ../services/notifications/score.yaml --image notifications:local && \
+	score-k8s generate ../services/order-processor/score.yaml --image order-processor:local && \
+	score-k8s generate ../services/payments/score.yaml --image payments:local && \
+	score-k8s generate ../services/shipping/score.yaml --image shipping:local
 
 ## Generate a manifests.yaml file from the score spec, deploy it to Kubernetes and wait for the Pods to be Ready.
 .PHONY: deploy-development
@@ -78,6 +91,27 @@ deploy-development: development/manifests.yaml
 	kubectl create namespace development || true
 	cd development && kubectl apply -f manifests.yaml -n development
 	sleep 5
+
+# Get notifications UI DNS.
+.PHONY: get-notifications-development
+get-notifications-development:
+	cd development && \
+	echo -e "http://$$(score-k8s resources get-outputs dns.default#notifications.dns --format '{{ .host }}'):8080"
+
+# Generate notifications by creating orders.
+.PHONY: test-development
+test-development:
+	cd development && \
+	curl localhost:80/inventory/restock \
+		-X POST \
+		-H "Host: $$(score-k8s resources get-outputs dns.default#inventory.dns --format '{{ .host }}')"
+	cd development && \
+	curl -X POST localhost:80/orders -H "Host: $$(score-k8s resources get-outputs dns.default#order-processor.dns --format '{{ .host }}')" \
+		-H "Content-Type: application/json" -d '{"customer": "bob", "items": ["orange"], "total": 12.00}'
+	sleep 5
+	cd development && \
+	curl -X POST localhost:80/orders -H "Host: $$(score-k8s resources get-outputs dns.default#order-processor.dns --format '{{ .host }}')" \
+		-H "Content-Type: application/json" -d '{"customer": "kendall", "items": ["kiwi"], "total": 121.00}'
 
 ## Delete the deployment of the local container in Kubernetes.
 .PHONY: cleanup-development
@@ -94,11 +128,12 @@ staging/.score-k8s/state.yaml:
 		--provisioners ../score-provisioners/00-postgres-dapr-state-store-with-actor-k8s.provisioners.yaml
 
 staging/manifests.yaml: services/inventory/score.yaml services/notifications/score.yaml services/order-processor/score.yaml services/payments/score.yaml services/shipping/score.yaml staging/.score-k8s/state.yaml Makefile
-	cd staging && score-k8s generate ../services/inventory/score.yaml --image inventory:local
-	cd staging && score-k8s generate ../services/notifications/score.yaml --image notifications:local
-	cd staging && score-k8s generate ../services/order-processor/score.yaml --image order-processor:local
-	cd staging && score-k8s generate ../services/payments/score.yaml --image payments:local
-	cd staging && score-k8s generate ../services/shipping/score.yaml --image shipping:local
+	cd staging && \
+	score-k8s generate ../services/inventory/score.yaml --image inventory:local && \
+	score-k8s generate ../services/notifications/score.yaml --image notifications:local && \
+	score-k8s generate ../services/order-processor/score.yaml --image order-processor:local && \
+	score-k8s generate ../services/payments/score.yaml --image payments:local && \
+	score-k8s generate ../services/shipping/score.yaml --image shipping:local
 
 ## Generate a manifests.yaml file from the score spec, deploy it to Kubernetes and wait for the Pods to be Ready.
 .PHONY: deploy-staging
@@ -106,6 +141,27 @@ deploy-staging: staging/manifests.yaml
 	kubectl create namespace staging || true
 	cd staging && kubectl apply -f manifests.yaml -n staging
 	sleep 5
+
+# Get notifications UI DNS.
+.PHONY: get-notifications-staging
+get-notifications-staging:
+	cd staging && \
+	echo -e "http://$$(score-k8s resources get-outputs dns.default#notifications.dns --format '{{ .host }}'):8080"
+
+# Generate notifications by creating orders.
+.PHONY: test-staging
+test-staging:
+	cd staging && \
+	curl localhost:80/inventory/restock \
+		-X POST \
+		-H "Host: $$(score-k8s resources get-outputs dns.default#inventory.dns --format '{{ .host }}')"
+	cd staging && \
+	curl -X POST localhost:80/orders -H "Host: $$(score-k8s resources get-outputs dns.default#order-processor.dns --format '{{ .host }}')" \
+		-H "Content-Type: application/json" -d '{"customer": "bob", "items": ["orange"], "total": 12.00}'
+	sleep 5
+	cd staging && \
+	curl -X POST localhost:80/orders -H "Host: $$(score-k8s resources get-outputs dns.default#order-processor.dns --format '{{ .host }}')" \
+		-H "Content-Type: application/json" -d '{"customer": "kendall", "items": ["kiwi"], "total": 121.00}'
 
 ## Delete the deployment of the local container in Kubernetes.
 .PHONY: cleanup-staging
@@ -123,11 +179,12 @@ production/.score-k8s/state.yaml:
 		--provisioners ../score-provisioners/00-azure-redis-dapr-state-store-with-actor-k8s.provisioners.yaml
 
 production/manifests.yaml: services/inventory/score.yaml services/notifications/score.yaml services/order-processor/score.yaml services/payments/score.yaml services/shipping/score.yaml production/.score-k8s/state.yaml Makefile
-	cd production && score-k8s generate ../services/inventory/score.yaml --image inventory:local
-	cd production && score-k8s generate ../services/notifications/score.yaml --image notifications:local
-	cd production && score-k8s generate ../services/order-processor/score.yaml --image order-processor:local
-	cd production && score-k8s generate ../services/payments/score.yaml --image payments:local
-	cd production && score-k8s generate ../services/shipping/score.yaml --image shipping:local
+	cd production && \
+	score-k8s generate ../services/inventory/score.yaml --image inventory:local && \
+	score-k8s generate ../services/notifications/score.yaml --image notifications:local && \
+	score-k8s generate ../services/order-processor/score.yaml --image order-processor:local && \
+	score-k8s generate ../services/payments/score.yaml --image payments:local && \
+	score-k8s generate ../services/shipping/score.yaml --image shipping:local && \
 
 ## Generate a manifests.yaml file from the score spec, deploy it to Kubernetes and wait for the Pods to be Ready.
 .PHONY: deploy-production
@@ -135,6 +192,27 @@ deploy-production: production/manifests.yaml
 	kubectl create namespace production || true
 	cd production && kubectl apply -f manifests.yaml -n production
 	sleep 5
+
+# Get notifications UI DNS.
+.PHONY: get-notifications-production
+get-notifications-production:
+	cd production && \
+	echo -e "http://$$(score-k8s resources get-outputs dns.default#notifications.dns --format '{{ .host }}'):8080"
+
+# Generate notifications by creating orders.
+.PHONY: test-production
+test-production:
+	cd production && \
+	curl localhost:80/inventory/restock \
+		-X POST \
+		-H "Host: $$(score-k8s resources get-outputs dns.default#inventory.dns --format '{{ .host }}')"
+	cd production && \
+	curl -X POST localhost:80/orders -H "Host: $$(score-k8s resources get-outputs dns.default#order-processor.dns --format '{{ .host }}')" \
+		-H "Content-Type: application/json" -d '{"customer": "bob", "items": ["orange"], "total": 12.00}'
+	sleep 5
+	cd production && \
+	curl -X POST localhost:80/orders -H "Host: $$(score-k8s resources get-outputs dns.default#order-processor.dns --format '{{ .host }}')" \
+		-H "Content-Type: application/json" -d '{"customer": "kendall", "items": ["kiwi"], "total": 121.00}'
 
 ## Delete the deployment of the local container in Kubernetes.
 .PHONY: cleanup-production
