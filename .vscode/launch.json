@@ -1,0 +1,67 @@
+{
+    "version": "0.2.0",
+    "compounds": [
+      {
+        "name": "Debug All Services",
+        "configurations": [
+          "Debug Inventory", 
+          "Debug Notifications",
+          "Debug OrderProcessor",
+          "Debug Payments",
+          "Debug Shipping"
+        ]
+      }
+    ],
+    "configurations": [
+      {
+        "name": "Debug Inventory",
+        "type": "debugpy",
+        "request": "attach",
+        "connect": {
+          "host": "localhost",
+          "port": 5678
+        },
+        "justMyCode": false
+      },
+      {
+        "name": "Debug Notifications",
+        "type": "debugpy",
+        "request": "attach",
+        "connect": {
+          "host": "localhost",
+          "port": 5679
+        },
+        "justMyCode": false
+      },
+      {
+        "name": "Debug OrderProcessor",
+        "type": "debugpy",
+        "request": "attach",
+        "connect": {
+          "host": "localhost",
+          "port": 5680
+        },
+        "justMyCode": false
+      },
+      {
+        "name": "Debug Payments",
+        "type": "debugpy",
+        "request": "attach",
+        "connect": {
+          "host": "localhost",
+          "port": 5681
+        },
+        "justMyCode": false
+      },
+      {
+        "name": "Debug Shipping",
+        "type": "debugpy",
+        "request": "attach",
+        "connect": {
+          "host": "localhost",
+          "port": 5682
+        },
+        "justMyCode": false
+      }
+    ]
+  }

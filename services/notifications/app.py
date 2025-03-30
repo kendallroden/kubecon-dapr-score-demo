@@ -1,6 +1,21 @@
 import logging
 import os
 
+# Enable debug mode only when environment variable is set
+if os.environ.get('PYTHON_DEBUG', '').lower() == 'true':
+    import debugpy
+    service_name = os.environ.get('SERVICE_NAME', 'unknown')
+    debug_port = int(os.environ.get('DEBUG_PORT', '5678'))
+    
+    print(f"🔍 [{service_name}] Enabling debugpy on port {debug_port}")
+    debugpy.listen(("0.0.0.0", debug_port))
+    
+    # Only wait for connection if explicitly requested
+    if os.environ.get('DEBUG_WAIT', '').lower() == 'true':
+        print(f"⏳ [{service_name}] Waiting for debugger attach...")
+        debugpy.wait_for_client()
+        print(f"✅ [{service_name}] Debugger attached!")
+        
 from flask import Flask, jsonify, render_template, request
 from flask_socketio import SocketIO
 
@@ -12,7 +27,6 @@ NOTIFICATIONS_TYPE = os.getenv("NOTIFICATIONS_TYPE", "Redis")
 
 app = Flask(__name__)
 socketio = SocketIO(app, cors_allowed_origins="*")
-
 
 @socketio.on('connect')
 def socket_connect():
@@ -30,7 +44,9 @@ def topic_notifications():
     Ref: https://docs.dapr.io/reference/api/pubsub_api/#provide-routes-for-dapr-to-deliver-topic-events"""
     logging.info(f"Received notification: {request.json}")
     event = request.json
-    socketio.emit('message', event)
+    # Extract the message string from the input field
+    message = event.get('data', '')
+    socketio.emit('message', {'message': message})
     return '', 200
 
 

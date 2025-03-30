@@ -31,13 +31,26 @@ window.onload = function () {
             connDiv.innerText = "closed";
         });
 
-        sock.on('message', function (evt) {
+        sock.on('message', function (data) {
             var item = document.createElement("div");
             item.className = "item";
-            var data = JSON.parse(evt.data);
-            var message = "<i>" + evt.time + "</i> | <b>" + data.order_id + "</b> | <i>" + data.message + "</i>";
-            var content = "<div class='item-text'>" + message + "</div>";
-            item.innerHTML = content;
+            
+            // Parse the JSON string from the message property
+            var orderData;
+            try {
+                orderData = JSON.parse(data.message);
+            } catch (e) {
+                // Fallback if parsing fails
+                orderData = { order_id: "unknown", message: data.message || "Error parsing message" };
+            }
+            
+            // Create formatted message
+            var timestamp = new Date().toLocaleTimeString();
+            var message = "<i>" + timestamp + "</i> | <b>" + 
+                          orderData.order_id + "</b> | <i>" + 
+                          orderData.message + "</i>";
+            
+            item.innerHTML = "<div class='item-text'>" + message + "</div>";
             appendLog(item);
         });
 

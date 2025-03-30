@@ -1,31 +1,25 @@
 ### Get the current inventory
-GET http://localhost:3002/inventory
+GET http://localhost:3002/api/v1/inventory
 
 ### Delete the current inventory
-DELETE http://localhost:3002/inventory
+DELETE http://localhost:3002/api/v1/inventory
 
 ### Restock inventory
-POST http://localhost:3002/inventory/restock
-
-### Test HTTP binding
-POST http://localhost:3003/payments/charge
-Content-Type: application/json
-
-{"id": "test", "customer": "bob", "items": ["orange"], "total": 12.00}
+POST http://localhost:3002/api/v1/inventory/restock
 
 ### Submit a simple order
 // @name wfrequest
 POST http://localhost:3000/orders
 Content-Type: application/json
 
-{"customer": "kendall", "items": ["kiwi"], "total": 121.00}
+{"customer": "joni", "item": "kiwi", "total": 121.00}
 
 ### Submit an expensive order
 // @name wfrequest_approval
 POST http://localhost:3000/orders
 Content-Type: application/json
 
-{"customer": "Anna", "items": ["kiwi"], "total": 1299.00}
+{"customer": "Anna", "item": "kiwi", "total": 1299.00}
 
 ### Get the status of an order
 @instance_id = {{wfrequest.response.body.instance_id}}
@@ -33,11 +27,11 @@ Content-Type: application/json
 GET http://localhost:3000/orders/{{instance_id}}
 
 ### Approve an order
-
 @instance_id = {{wfrequest_approval.response.body.instance_id}}
+
 POST http://localhost:3000/orders/{{instance_id}}/approve
 Content-Type: application/json
 
-{"approver": "kendall", "approved": true}
+{"approver": "kendall", "approved": false}
 
 

@@ -9,19 +9,42 @@ apps:
     appPort: 3002
     appDirPath: ./services/inventory
     command: ["python3", "app.py"]
+    env:
+      PYTHON_DEBUG: "true"
+      DEBUG_PORT: "5678"
+      SERVICE_NAME: "inventory"
   - appId: notifications
     appPort: 3001
     appDirPath: ./services/notifications
     command: ["python3", "app.py"]
+    env:
+      PYTHON_DEBUG: "true"
+      DEBUG_PORT: "5679"
+      SERVICE_NAME: "notifications"
+      DEBUG_WAIT: "false"
   - appId: order-processor
     appPort: 3000
     appDirPath: ./services/order-processor
     command: ["python3", "app.py"]
+    env:
+      PYTHON_DEBUG: "true"
+      DEBUG_PORT: "5680"
+      SERVICE_NAME: "order-processor"
+      DEBUG_WAIT: "true"
   - appId: payments
     appPort: 3003
     appDirPath: ./services/payments
     command: ["python3", "app.py"]
+    env:
+      PYTHON_DEBUG: "true"
+      DEBUG_PORT: "5681"
+      SERVICE_NAME: "payments"
+      DEBUG_WAIT: "true"
   - appId: shipping
     appPort: 3004
     appDirPath: ./services/shipping
     command: ["python3", "app.py"]
+    env:
+      PYTHON_DEBUG: "true"
+      DEBUG_PORT: "5682"
+      SERVICE_NAME: "shipping"

@@ -57,7 +57,7 @@ Test `order`:
 ```bash
 ORDER_DNS=$(score-compose resources get-outputs dns.default#order-processor.dns --format '{{ .host }}')
 
-curl -X POST localhost:8080/orders -H "Host: ${ORDER_DNS}" -H "Content-Type: application/json" -d '{"id": "test", "customer": "bob", "items": ["orange"], "total": 12.00}'
+curl -X POST localhost:8080/orders -H "Host: ${ORDER_DNS}" -H "Content-Type: application/json" -d '{"id": "test", "customer": "bob", "item": "orange", "total": 12.00}'
 
 curl localhost:8080/orders/FIXME -H "Host: ${ORDER_DNS}"
 ```
@@ -162,7 +162,11 @@ Test `order`:
 ```bash
 ORDER_DNS=$(score-k8s resources get-outputs dns.default#order-processor.dns --format '{{ .host }}')
 
+<<<<<<< Updated upstream
 curl -X POST localhost:80/orders -H "Host: ${ORDER_DNS}" -H "Content-Type: application/json" -d '{"id": "test", "customer": "bob", "items": ["orange"], "total": 12.00}'
+=======
+curl -X POST ${ORDER_DNS}/orders -H "Content-Type: application/json" -d '{"id": "test", "customer": "bob", "item": ["oranges"], "total": 12.00}'
+>>>>>>> Stashed changes
 
 curl localhost:80/orders/FIXME -H "Host: ${ORDER_DNS}"
 ```
@@ -291,7 +295,11 @@ Test `order`:
 ```bash
 ORDER_DNS=$(score-k8s resources get-outputs dns.default#order-processor.dns --format '{{ .host }}')
 
+<<<<<<< Updated upstream
 curl -X POST localhost:80/orders -H "Host: ${ORDER_DNS}" -H "Content-Type: application/json" -d '{"id": "test", "customer": "bob", "items": ["orange"], "total": 12.00}'
+=======
+curl -X POST ${ORDER_DNS}/orders -H "Content-Type: application/json" -d '{"id": "test", "customer": "bob", "item": ["oranges"], "total": 12.00}'
+>>>>>>> Stashed changes
 
 curl localhost:80/orders/FIXME -H "Host: ${ORDER_DNS}"
 ```
@@ -424,7 +432,11 @@ Test `order`:
 ```bash
 ORDER_DNS=$(score-k8s resources get-outputs dns.default#order-processor.dns --format '{{ .host }}')
 
+<<<<<<< Updated upstream
 curl -X POST localhost:80/orders -H "Host: ${ORDER_DNS}" -H "Content-Type: application/json" -d '{"id": "test", "customer": "bob", "items": ["orange"], "total": 12.00}'
+=======
+curl -X POST ${ORDER_DNS}/orders -H "Content-Type: application/json" -d '{"id": "test", "customer": "bob", "item": ["oranges"], "total": 12.00}'
+>>>>>>> Stashed changes
 
 curl localhost:80/orders/FIXME -H "Host: ${ORDER_DNS}"
 ```
