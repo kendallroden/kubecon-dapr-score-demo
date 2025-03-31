@@ -237,3 +237,4 @@ pyrightconfig.json
 **/manifests.yaml
 dapr-etcd-data/
 .vscode/settings.json
+demo-magic.sh
