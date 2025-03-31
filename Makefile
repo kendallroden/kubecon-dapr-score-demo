@@ -21,7 +21,8 @@ dapr-up:
 		--provisioners https://raw.githubusercontent.com/score-spec/community-provisioners/refs/heads/main/score-compose/10-redis-dapr-pubsub.provisioners.yaml \
 		--provisioners https://raw.githubusercontent.com/score-spec/community-provisioners/refs/heads/main/score-compose/10-dapr-subscription.provisioners.yaml \
 		--provisioners score-provisioners/00-redis-dapr-state-store-with-actor-compose.provisioners.yaml \
-		--patch-templates score-provisioners/dapr.tpl
+		--patch-templates score-provisioners/dapr.tpl \
+		--patch-templates https://raw.githubusercontent.com/score-spec/community-patchers/refs/heads/main/score-compose/unprivileged.tpl
 
 compose.yaml: services/inventory/score.yaml services/notifications/score.yaml services/order-processor/score.yaml services/payments/score.yaml services/shipping/score.yaml .score-compose/state.yaml Makefile
 	score-compose generate services/inventory/score.yaml \
