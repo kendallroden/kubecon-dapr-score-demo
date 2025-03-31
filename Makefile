@@ -51,14 +51,14 @@ get-notifications-local:
 # Generate notifications by creating orders.
 .PHONY: test-local
 test-local:
-	curl localhost:8080/inventory/restock \
+	curl localhost:8080/api/v1/inventory/restock \
 		-X POST \
 		-H "Host: $$(score-compose resources get-outputs dns.default#inventory.dns --format '{{ .host }}')"
 	curl -X POST localhost:8080/orders -H "Host: $$(score-compose resources get-outputs dns.default#order-processor.dns --format '{{ .host }}')" \
-		-H "Content-Type: application/json" -d '{"customer": "bob", "items": ["orange"], "total": 12.00}'
+		-H "Content-Type: application/json" -d '{"customer": "bob", "item": "orange", "total": 12.00}'
 	sleep 5
 	curl -X POST localhost:8080/orders -H "Host: $$(score-compose resources get-outputs dns.default#order-processor.dns --format '{{ .host }}')" \
-		-H "Content-Type: application/json" -d '{"customer": "kendall", "items": ["kiwi"], "total": 121.00}'
+		-H "Content-Type: application/json" -d '{"customer": "anna", "item": "kiwi", "total": 121.00}'
 
 ## Delete the containers running via compose down.
 .PHONY: cleanup-local
@@ -114,16 +114,16 @@ get-notifications-development:
 .PHONY: test-development
 test-development:
 	cd development && \
-	curl localhost:80/inventory/restock \
+	curl localhost:80/api/v1/inventory/restock \
 		-X POST \
 		-H "Host: $$(score-k8s resources get-outputs dns.default#inventory.dns --format '{{ .host }}')"
 	cd development && \
 	curl -X POST localhost:80/orders -H "Host: $$(score-k8s resources get-outputs dns.default#order-processor.dns --format '{{ .host }}')" \
-		-H "Content-Type: application/json" -d '{"customer": "bob", "items": ["orange"], "total": 12.00}'
+		-H "Content-Type: application/json" -d '{"customer": "bob", "item": "orange", "total": 12.00}'
 	sleep 5
 	cd development && \
 	curl -X POST localhost:80/orders -H "Host: $$(score-k8s resources get-outputs dns.default#order-processor.dns --format '{{ .host }}')" \
-		-H "Content-Type: application/json" -d '{"customer": "kendall", "items": ["kiwi"], "total": 121.00}'
+		-H "Content-Type: application/json" -d '{"customer": "anna", "item": "kiwi", "total": 121.00}'
 
 ## Delete the deployment of the local container in Kubernetes.
 .PHONY: cleanup-development
@@ -167,16 +167,16 @@ get-notifications-staging:
 .PHONY: test-staging
 test-staging:
 	cd staging && \
-	curl localhost:80/inventory/restock \
+	curl localhost:80/api/v1/inventory/restock \
 		-X POST \
 		-H "Host: $$(score-k8s resources get-outputs dns.default#inventory.dns --format '{{ .host }}')"
 	cd staging && \
 	curl -X POST localhost:80/orders -H "Host: $$(score-k8s resources get-outputs dns.default#order-processor.dns --format '{{ .host }}')" \
-		-H "Content-Type: application/json" -d '{"customer": "bob", "items": ["orange"], "total": 12.00}'
+		-H "Content-Type: application/json" -d '{"customer": "bob", "item": "orange", "total": 12.00}'
 	sleep 5
 	cd staging && \
 	curl -X POST localhost:80/orders -H "Host: $$(score-k8s resources get-outputs dns.default#order-processor.dns --format '{{ .host }}')" \
-		-H "Content-Type: application/json" -d '{"customer": "kendall", "items": ["kiwi"], "total": 121.00}'
+		-H "Content-Type: application/json" -d '{"customer": "anna", "item": "kiwi", "total": 121.00}'
 
 ## Delete the deployment of the local container in Kubernetes.
 .PHONY: cleanup-staging
@@ -224,11 +224,11 @@ test-production:
 		-H "Host: $$(score-k8s resources get-outputs dns.default#inventory.dns --format '{{ .host }}')"
 	cd production && \
 	curl -X POST localhost:80/orders -H "Host: $$(score-k8s resources get-outputs dns.default#order-processor.dns --format '{{ .host }}')" \
-		-H "Content-Type: application/json" -d '{"customer": "bob", "items": ["orange"], "total": 12.00}'
+		-H "Content-Type: application/json" -d '{"customer": "bob", "item": "orange", "total": 12.00}'
 	sleep 5
 	cd production && \
 	curl -X POST localhost:80/orders -H "Host: $$(score-k8s resources get-outputs dns.default#order-processor.dns --format '{{ .host }}')" \
-		-H "Content-Type: application/json" -d '{"customer": "kendall", "items": ["kiwi"], "total": 121.00}'
+		-H "Content-Type: application/json" -d '{"customer": "anna", "item": "kiwi", "total": 121.00}'
 
 ## Delete the deployment of the local container in Kubernetes.
 .PHONY: cleanup-production
