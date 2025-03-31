@@ -58,7 +58,7 @@
             automountServiceAccountToken: false
             containers:
             - name: postgres-db
-              image: postgres:17-alpine
+              image: mirror.gcr.io/postgres:17-alpine
               ports:
               - name: postgres
                 containerPort: 5432
