@@ -29,7 +29,8 @@ compose.yaml: services/inventory/score.yaml services/notifications/score.yaml se
 		--build 'inventory={"context":"services/inventory/","tags":["inventory:local"]}'
 	score-compose generate services/notifications/score.yaml \
 		--build 'notifications={"context":"services/notifications/","tags":["notifications:local"]}' \
-		--override-property 'containers.notifications.variables.WITH_SCORE="true"'
+		--override-property 'containers.notifications.variables.WITH_SCORE="true"' \
+		--override-property 'containers.notifications.variables.RUNTIME="Docker"'
 	score-compose generate services/order-processor/score.yaml \
 		--build 'order-processor={"context":"services/order-processor/","tags":["order-processor:local"]}'
 	score-compose generate services/payments/score.yaml \
@@ -93,7 +94,8 @@ development/manifests.yaml: services/inventory/score.yaml services/notifications
 	cd development  && \
 	score-k8s generate ../services/inventory/score.yaml --image inventory:local && \
 	score-k8s generate ../services/notifications/score.yaml --image notifications:local  \
-		--override-property 'containers.notifications.variables.WITH_SCORE="true"' && \
+		--override-property 'containers.notifications.variables.WITH_SCORE="true"' \
+		--override-property 'containers.notifications.variables.RUNTIME="Kubernetes"' && \
 	score-k8s generate ../services/order-processor/score.yaml --image order-processor:local && \
 	score-k8s generate ../services/payments/score.yaml --image payments:local && \
 	score-k8s generate ../services/shipping/score.yaml --image shipping:local
@@ -143,8 +145,9 @@ staging/.score-k8s/state.yaml:
 staging/manifests.yaml: services/inventory/score.yaml services/notifications/score.yaml services/order-processor/score.yaml services/payments/score.yaml services/shipping/score.yaml staging/.score-k8s/state.yaml Makefile
 	cd staging && \
 	score-k8s generate ../services/inventory/score.yaml --image inventory:local && \
-	score-k8s generate ../services/notifications/score.yaml --image notifications:local  \
+	score-k8s generate ../services/notifications/score.yaml --image notifications:local \
 		--override-property 'containers.notifications.variables.WITH_SCORE="true"' \
+		--override-property 'containers.notifications.variables.RUNTIME="Kubernetes"' \
 		--override-property 'containers.notifications.variables.INVENTORY_TYPE="PostgreSQL"' \
 		--override-property 'containers.notifications.variables.NOTIFICATIONS_TYPE="RabbitMQ"' && \
 	score-k8s generate ../services/order-processor/score.yaml --image order-processor:local && \
@@ -197,7 +200,8 @@ production/.score-k8s/state.yaml:
 production/manifests.yaml: services/inventory/score.yaml services/notifications/score.yaml services/order-processor/score.yaml services/payments/score.yaml services/shipping/score.yaml production/.score-k8s/state.yaml Makefile
 	cd production && \
 	score-k8s generate ../services/inventory/score.yaml --image inventory:local && \
-	score-k8s generate ../services/notifications/score.yaml --image notifications:local  \
+	score-k8s generate ../services/notifications/score.yaml --image notifications:local \
+		--override-property 'containers.notifications.variables.RUNTIME="Docker"' \
 		--override-property 'containers.notifications.variables.WITH_SCORE="true"' && \
 	score-k8s generate ../services/order-processor/score.yaml --image order-processor:local && \
 	score-k8s generate ../services/payments/score.yaml --image payments:local && \

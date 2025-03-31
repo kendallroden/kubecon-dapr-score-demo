@@ -2,7 +2,7 @@
 <html lang="en">
 
 <head>
-    <title>Catalyst workflow event viewer</title>
+    <title>Orders notifications viewer</title>
     <meta charset="UTF-8">
     <meta name="description" content="catalyst event viewer">
     <meta name="keywords" content="events, dapr, websocket, golang">
@@ -36,6 +36,9 @@
         <!-- Footer -->
         <div id="page-footer">
             <div>Host: <b id="host"></b></div>
+            {% if runtime != "" %}
+            <div>On: <b>{{ runtime }}</b></div>
+            {% endif %}
             <div>Inventory Store: <b>{{ inventory_type }}</b></div>
             <div>Notifications: <b>{{ notifications_type }}</b></div>
             <br />
