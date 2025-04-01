@@ -11,9 +11,6 @@ clear
 #sudo make cleanup-local
 #sudo make deploy-local
 sudo rm compose.yaml || true
-#sudo make cleanup-development
-#sudo make deploy-development
-sudo rm development/manifests.yaml || true
 #sudo make cleanup-staging
 #sudo make deploy-staging
 sudo rm staging/manifests.yaml || true
