@@ -10,22 +10,23 @@ clear
 # demo cleanup
 #sudo make cleanup-local
 #sudo make deploy-local
-sudo rm compose.yaml
+sudo rm compose.yaml || true
 #sudo make cleanup-development
 #sudo make deploy-development
-#sudo rm development/manifests.yaml
+sudo rm development/manifests.yaml || true
 #sudo make cleanup-staging
 #sudo make deploy-staging
-#sudo rm staging/manifests.yaml
-#clear
+sudo rm staging/manifests.yaml || true
+clear
 
-pe "echo \"Developers should not write either Docker Compose file or Kubernetes manifests, let me show you how!\""
 pe "code services/notifications/score.yaml"
-pe "clear"
+clear
+pe "code services/inventory/score.yaml"
 
 pe "echo \"Demo #1 - score-compose\""
 pe "sudo make compose.yaml"
 pe "code -g Makefile:19"
+clear
 pe "score-compose resources list | grep dapr"
 pe "code compose.yaml"
 pe "sudo docker compose up --build -d"
@@ -52,3 +53,6 @@ pe "sudo kubectl apply -f staging/manifests.yaml -n staging"
 pe "sudo kubectl get statefulset -n staging"
 pe "make get-notifications-staging"
 pe "make test-staging"
+
+clear
+pe "echo \"The end.\""
