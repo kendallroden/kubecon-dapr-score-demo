@@ -16,7 +16,8 @@ GATEWAY_API_VERSION=$(curl -sL https://api.github.com/repos/kubernetes-sigs/gate
 kubectl apply \
     -f https://github.com/kubernetes-sigs/gateway-api/releases/download/${GATEWAY_API_VERSION}/standard-install.yaml
 
-helm install ngf oci://ghcr.io/nginxinc/charts/nginx-gateway-fabric \
+helm upgrade ngf oci://ghcr.io/nginxinc/charts/nginx-gateway-fabric \
+    --install \
     --create-namespace \
     -n nginx-gateway \
     --set service.type=NodePort \
