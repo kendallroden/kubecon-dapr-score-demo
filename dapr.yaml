@@ -1,6 +1,6 @@
 version: 1
 common:
-  logLevel: info
+  logLevel: error
   appLogDestination: "console"
   daprdLogDestination: "console"
   resourcesPaths: ["./components"]
@@ -21,7 +21,7 @@ apps:
       PYTHON_DEBUG: "true"
       DEBUG_PORT: "5679"
       SERVICE_NAME: "notifications"
-      DEBUG_WAIT: "false"
+      # DEBUG_WAIT: "false"
   - appId: order-processor
     appPort: 3000
     appDirPath: ./services/order-processor
@@ -30,7 +30,7 @@ apps:
       PYTHON_DEBUG: "true"
       DEBUG_PORT: "5680"
       SERVICE_NAME: "order-processor"
-      DEBUG_WAIT: "true"
+      # DEBUG_WAIT: "true"
   - appId: payments
     appPort: 3003
     appDirPath: ./services/payments
@@ -39,7 +39,7 @@ apps:
       PYTHON_DEBUG: "true"
       DEBUG_PORT: "5681"
       SERVICE_NAME: "payments"
-      DEBUG_WAIT: "true"
+      # DEBUG_WAIT: "true"
   - appId: shipping
     appPort: 3004
     appDirPath: ./services/shipping

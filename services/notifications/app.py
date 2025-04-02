@@ -41,8 +41,7 @@ def index():
 
 @app.route('/' + TOPIC_NAME, methods=['POST', 'PUT'])
 def topic_notifications():
-    """Handles notification events from the Dapr pubsub component.
-    Ref: https://docs.dapr.io/reference/api/pubsub_api/#provide-routes-for-dapr-to-deliver-topic-events"""
+    # Handles notification events from the Dapr pubsub component.
     logging.info(f"Received notification: {request.json}")
     event = request.json
     # Extract the message string from the input field

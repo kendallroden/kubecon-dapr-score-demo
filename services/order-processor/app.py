@@ -141,7 +141,8 @@ def notify(ctx: wf.WorkflowActivityContext, message: str):
     with DaprClient() as d:
         d.publish_event(PUBSUB_NAME, TOPIC_NAME, json.dumps({
             "order_id": ctx.workflow_id,
-            "message": message
+            "message": message,
+            "data-content-type": "application/json"
         }))
 
 
