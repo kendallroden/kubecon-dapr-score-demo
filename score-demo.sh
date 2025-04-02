@@ -22,7 +22,6 @@ pe "code services/inventory/score.yaml"
 
 pe "echo \"Demo #1 - score-compose\""
 pe "sudo make compose.yaml"
-clear
 pe "code compose.yaml"
 pe "sudo docker compose up --build -d"
 pe "sudo docker ps | grep redis"
