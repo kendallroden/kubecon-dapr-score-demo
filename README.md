@@ -2,7 +2,7 @@
 
 [![Open in GitHub Codespaces](https://github.com/codespaces/badge.svg)](https://codespaces.new/kendallroden/kubecon-dapr-score-demo)
 
-This repository was illustrated and demonstrated during our talk at KubeCon EU 2025: [Dapr + Score: Mixing the Perfect Cocktail for an Enhanced Developer Experience](https://sched.co/1txGi) [video](https://youtu.be/-fGztPUuD8k?list=PLj6h78yzYM2MP0QhYFK8HOb8UqgbIkLMc) [presentation](https://static.sched.com/hosted_files/kccnceu2025/41/Dapr%20%2B%20Score%20%40%20KubeCon%20EU%202025.pdf?_gl=1*4edofk*_gcl_au*MTU2NDkwNDM0OC4xNzQ0MzEyMjI0LjE4NjU4NzM2NDQuMTc0NDc1NjY5OS4xNzQ0NzU2NzMx*FPAU*MTU2NDkwNDM0OC4xNzQ0MzEyMjI0).
+This repository was illustrated and demonstrated during our talk at KubeCon EU 2025: [Dapr + Score: Mixing the Perfect Cocktail for an Enhanced Developer Experience](https://sched.co/1txGi) ([video](https://youtu.be/-fGztPUuD8k?list=PLj6h78yzYM2MP0QhYFK8HOb8UqgbIkLMc) - [presentation](https://static.sched.com/hosted_files/kccnceu2025/41/Dapr%20%2B%20Score%20%40%20KubeCon%20EU%202025.pdf?_gl=1*4edofk*_gcl_au*MTU2NDkwNDM0OC4xNzQ0MzEyMjI0LjE4NjU4NzM2NDQuMTc0NDc1NjY5OS4xNzQ0NzU2NzMx*FPAU*MTU2NDkwNDM0OC4xNzQ0MzEyMjI0)).
 
 ```mermaid
 flowchart TD
