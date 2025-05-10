@@ -17,9 +17,9 @@ dapr-up:
 
 .score-compose/state.yaml:
 	score-compose init --no-sample \
-		--provisioners https://raw.githubusercontent.com/score-spec/community-provisioners/refs/heads/main/score-compose/10-redis-dapr-state-store.provisioners.yaml \
-		--provisioners https://raw.githubusercontent.com/score-spec/community-provisioners/refs/heads/main/score-compose/10-redis-dapr-pubsub.provisioners.yaml \
-		--provisioners https://raw.githubusercontent.com/score-spec/community-provisioners/refs/heads/main/score-compose/10-dapr-subscription.provisioners.yaml \
+		--provisioners https://raw.githubusercontent.com/score-spec/community-provisioners/refs/heads/main/dapr-state-store/score-compose/10-redis-dapr-state-store.provisioners.yaml \
+		--provisioners https://raw.githubusercontent.com/score-spec/community-provisioners/refs/heads/main/dapr-pubsub/score-compose/10-redis-dapr-pubsub.provisioners.yaml \
+		--provisioners https://raw.githubusercontent.com/score-spec/community-provisioners/refs/heads/main/dapr-subscription/score-compose/10-dapr-subscription.provisioners.yaml \
 		--provisioners score-provisioners/00-redis-dapr-state-store-with-actor-compose.provisioners.yaml \
 		--patch-templates https://raw.githubusercontent.com/score-spec/community-patchers/refs/heads/main/score-compose/dapr.tpl \
 		--patch-templates https://raw.githubusercontent.com/score-spec/community-patchers/refs/heads/main/score-compose/unprivileged.tpl
@@ -85,9 +85,9 @@ development/.score-k8s/state.yaml:
 	mkdir development -p
 	cd development && \
 	score-k8s init --no-sample \
-		--provisioners https://raw.githubusercontent.com/score-spec/community-provisioners/refs/heads/main/score-k8s/10-redis-dapr-pubsub.provisioners.yaml \
-		--provisioners https://raw.githubusercontent.com/score-spec/community-provisioners/refs/heads/main/score-k8s/10-dapr-subscription.provisioners.yaml \
-		--provisioners https://raw.githubusercontent.com/score-spec/community-provisioners/refs/heads/main/score-k8s/10-shared-gateway-httproute.provisioners.yaml \
+		--provisioners https://raw.githubusercontent.com/score-spec/community-provisioners/refs/heads/main/dapr-pubsub/score-k8s/10-redis-dapr-pubsub.provisioners.yaml \
+		--provisioners https://raw.githubusercontent.com/score-spec/community-provisioners/refs/heads/main/dapr-subscription/score-k8s/10-dapr-subscription.provisioners.yaml \
+		--provisioners https://raw.githubusercontent.com/score-spec/community-provisioners/refs/heads/main/route/score-k8s/10-shared-gateway-httproute.provisioners.yaml \
 		--provisioners ../score-provisioners/00-redis-dapr-state-store-with-actor-k8s.provisioners.yaml
 
 development/manifests.yaml: services/inventory/score.yaml services/notifications/score.yaml services/order-processor/score.yaml services/payments/score.yaml services/shipping/score.yaml development/.score-k8s/state.yaml Makefile
